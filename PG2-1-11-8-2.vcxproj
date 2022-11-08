@@ -92,6 +92,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\Desktop\TD2player\TD2player\player.cpp" />
     <ClCompile Include="C:\KamataEngine\DirectXGame\base\DirectXCommon.cpp" />
     <ClCompile Include="C:\KamataEngine\DirectXGame\base\TextureManager.cpp" />
     <ClCompile Include="C:\KamataEngine\DirectXGame\base\WinApp.cpp" />
@@ -100,6 +101,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\Desktop\TD2player\TD2player\player.h" />
     <ClInclude Include="..\DirectXGame\math\MathUtility.h" />
     <ClInclude Include="..\DirectXGame\math\Matrix4.h" />
     <ClInclude Include="..\DirectXGame\math\Vector2.h" />
