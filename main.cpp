@@ -8,7 +8,7 @@
 const char kWindowTitle[] = "学籍番号";
 struct Vector2
 {
-	float x;
+	float x;;
 	float y;
 };
 
@@ -42,6 +42,16 @@ struct BARRIER
 };
 
 
+struct SHOOT
+{
+	
+	
+	Vector2 position;
+	float speed;
+	int isShoot;
+
+
+};
 struct PLAYER
 {
 	Vector2 position;
@@ -65,9 +75,15 @@ struct PLAYER
 	BARRIER barrier2;
 	BARRIER barrier3;
 	BARRIER barrier4;
+	const int Num ;
+	SHOOT shoot;
+	
 };
 // Windowsアプリでのエントリーポイント(main関数)
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) 
+{
+	Novice::Initialize(kWindowTitle, 1280, 720);
+
 	PLAYER Player
 	{
 		{0,0},
@@ -88,11 +104,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{ {0,0},4,0,{0,0}, 0.0f,32, 1.0f / 64.0f * float(M_PI) },
 		{ {0,0},4,0,{0,0}, 1.5875f,32, 1.0f / 64.0f * float(M_PI) },
 		{ {0,0},4,0,{0,0}, 3.175f,32, 1.0f / 64.0f * float(M_PI) },
-		{ {0,0},4,0,{0,0}, 4.7625f,32, 1.0f / 64.0f * float(M_PI) }
+		{ {0,0},4,0,{0,0}, 4.7625f,32, 1.0f / 64.0f * float(M_PI) },
+		100,
+		
+		{{0,0},5,0}
+		
 	};
 
 	// ライブラリの初期化
-	Novice::Initialize(kWindowTitle, 1280, 720);
+	
 
 	// キー入力結果を受け取る箱
 	char keys[256] = {0};
@@ -197,10 +217,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//移動処理終了
 
 
-
-
-
-
+		//射撃
+		
+	
+	
 		if (keys[DIK_1])
 		{
 			Player.RightMachine.Flag = 1;
@@ -287,12 +307,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			);
 			Novice::DrawEllipse(
-				Player.barrier4.position.x, Player.barrier4.position.y
-				, 16, 16, 0.0f, RED,
-				kFillModeSolid)
-				;
+				Player.barrier4.position.x,
+				Player.barrier4.position.y,
+				16, 16, 0.0f, RED,
+				kFillModeSolid);
 		}
-
 
 		if (Player.barrier3.Flag == 1)
 		{
@@ -336,7 +355,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Player.LeftMachine.position.y,
 			32, 32, 0.0f, WHITE, kFillModeSolid
 		);
-
+		
 
 		Novice::DrawLine(Player.barrier1.position.x, Player.barrier1.position.y,
 			Player.barrier3.position.x, Player.barrier3.position.y, WHITE
@@ -348,7 +367,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::DrawEllipse(Player.position.x + 32, Player.position.y + 32, 100, 100, 0.0f, WHITE, kFillModeWireFrame);
 
 
-
+		Novice::DrawBox(Player.shoot.position.x, Player.shoot.position.x, 16, 16, 0.0f, BLACK, kFillModeSolid);
 
 
 		Novice::DrawBox(10, 10, 10, 10, 0.0f, WHITE, kFillModeSolid);
@@ -356,7 +375,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		
 		Novice::DrawBox(50, 50, 50, 50, 0.0f, WHITE, kFillModeSolid);
 		Novice::DrawBox(10, 10, 10, 10, 0.0f, WHITE, kFillModeSolid);
+		
 
+		
 		///
 		/// ↑描画処理ここまで
 		///
