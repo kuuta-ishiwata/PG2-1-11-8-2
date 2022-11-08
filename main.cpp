@@ -76,8 +76,9 @@ struct PLAYER
 	BARRIER barrier3;
 	BARRIER barrier4;
 	const int Num ;
-	SHOOT shoot;
-	
+	SHOOT shoot[100];
+	int shootFlag;
+		int timer;
 };
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) 
@@ -107,8 +108,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{ {0,0},4,0,{0,0}, 4.7625f,32, 1.0f / 64.0f * float(M_PI) },
 		100,
 		
-		{{0,0},5,0}
-		
+		{{0,0},5,0},
+		0,
+		10
 	};
 
 	// ライブラリの初期化
@@ -133,7 +135,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//中心
 		Player.PosCenter.x = Player.position.x + Player.radius;
 		Player.PosCenter.y = Player.position.y + Player.radius;// Player.radius;
-		Novice::ScreenPrintf(500, 0, "center %f  %f", Player.PosCenter.x, Player.PosCenter.y);
+		
+
+
+		Novice::ScreenPrintf(700, 0, "center %f  %f", Player.PosCenter.x, Player.PosCenter.y);
+		
+		
 		//四隅position
 		HitBoxFanction(
 			Player.radius, Player.PosCenter.x, Player.PosCenter.y,
@@ -218,9 +225,98 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 		//射撃
-		
-	
-	
+
+
+		Player.timer--;
+		Novice::ScreenPrintf(0, 40, "%d", Player.timer);
+		Player.shootFlag = 0;
+
+		if (Player.timer < 0)
+		{
+
+			
+
+			if (keys[DIK_SPACE])
+			{
+				Player.timer = 10;
+
+				Player.shootFlag = 1;
+
+			}
+
+			
+
+			
+
+			
+
+
+		};
+		if (Player.shootFlag == 1)
+		{
+
+
+			for (int i = 0; i < Player.Num; i++)
+			{
+
+
+
+
+
+				if (Player.shoot[i].isShoot == 0)
+				{
+					Player.shoot[i].position.x = Player.PosCenter.x;
+					Player.shoot[i].position.y = Player.PosCenter.y;
+
+					Player.shoot[i].speed = 5;
+
+					Player.shoot[i].isShoot = 1;
+
+
+
+					break;
+
+
+
+				}
+
+
+			}
+
+
+		}
+
+		Novice::ScreenPrintf(0, 0, "%d", Player.shoot[1].isShoot);
+
+
+
+
+		for (int i = 0; i < Player.Num; i++)
+		{
+			if (Player.shoot[i].isShoot == 0)
+			{
+				continue;
+			}
+
+			if (Player.shoot[i].isShoot == 1)
+			{
+
+
+
+				Player.shoot[i].position.y -= Player.shoot[i].speed;
+
+			}
+
+			if (Player.shoot[i].position.y <= 0)
+			{
+				Player.shoot[i].isShoot = 0;
+			}
+
+		}
+		//射撃終了
+
+
+
 		if (keys[DIK_1])
 		{
 			Player.RightMachine.Flag = 1;
@@ -366,15 +462,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		Novice::DrawEllipse(Player.position.x + 32, Player.position.y + 32, 100, 100, 0.0f, WHITE, kFillModeWireFrame);
 
+		for (int i = 0; i < Player.Num; i++)
+		{
 
-		Novice::DrawBox(Player.shoot.position.x, Player.shoot.position.x, 16, 16, 0.0f, BLACK, kFillModeSolid);
 
+			Novice::DrawBox(
+				Player.shoot[i].position.x, Player.shoot[i].position.y, 
+				16, 16, 0.0f, BLACK, kFillModeSolid
+			);
+		}
 
-		Novice::DrawBox(10, 10, 10, 10, 0.0f, WHITE, kFillModeSolid);
-
-		
-		Novice::DrawBox(50, 50, 50, 50, 0.0f, WHITE, kFillModeSolid);
-		Novice::DrawBox(10, 10, 10, 10, 0.0f, WHITE, kFillModeSolid);
+	
 		
 
 		
