@@ -36,12 +36,13 @@ struct MACHINE
 	Vector2 position;
 	float speed;
 	int SpawnFlag;
-	int timer;
+	
 
 	int ShootFlag;
+	
+	const int Num;
 	SHOOT shoot[100];
-	int shoottimer;
-
+	
 };
 
 struct BARRIER
@@ -80,11 +81,23 @@ struct PLAYER
 	BARRIER barrier3;
 	BARRIER barrier4;
 
+
 	const int Num ;
 	SHOOT shoot[100];
 	int ShootMainFlag;
 	int timer;
+	int LEtimer;
+	int RItimer;
 };
+
+
+struct Sound
+{
+	unsigned int shoot;
+
+
+};
+
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) 
 {
@@ -103,9 +116,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		{{0,0},{0,0},{0,0}, {0,0}},
 
-
-		{{0,0},7,0,0,0,0 ,100},
-		{{0,0},7,0 ,0,0,0,100},
+		{{0,0},7,0 ,0,100},
+		{{0,0},7,0 ,0,100},
 
 		{ {0,0},4,0,{0,0}, 0.0f,32, 1.0f / 64.0f * float(M_PI) },
 		{ {0,0},4,0,{0,0}, 1.5875f,32, 1.0f / 64.0f * float(M_PI) },
@@ -115,9 +127,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		
 		{{0,0},5,0},
 		0,
+		10,
 		10
 	};
+	Sound sound
+	{
+		Novice::LoadAudio("./Resouce/sound/shot.wav")
 
+
+	};
 	// ライブラリの初期化
 	
 
@@ -255,6 +273,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				{
 					Player.shoot[i].position.x = Player.PosCenter.x-8;
 					Player.shoot[i].position.y = Player.PosCenter.y;
+					
+					if (!Novice::IsPlayingAudio(sound.shoot))
+					{
+						Novice::PlayAudio(sound.shoot, false, 1.0);
+					}
 
 					Player.shoot[i].speed = 8;
 
@@ -263,8 +286,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				}
 			}
 		}
-
-
+		Player.RItimer--;
+		Player.LEtimer--;
+		//右子機射撃
 		for (int i = 0; i < Player.Num; i++)
 		{
 			if (Player.shoot[i].isShoot == 0)
@@ -283,10 +307,121 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 
 		}
+
+		if (Player.RightMachine.SpawnFlag == 1)
+		{
+
+			
+
+			Player.RightMachine.ShootFlag = 0;
+
+			if (Player.RItimer < 0)
+			{
+				Player.RItimer = 25;
+
+				Player.RightMachine.ShootFlag = 1;
+
+			};
+
+			if (Player.RightMachine.ShootFlag == 1)
+			{
+				for (int i = 0; i < 100; i++)
+				{
+					if (Player.RightMachine.shoot[i].isShoot == 0)
+					{
+						Player.RightMachine.shoot[i].position.x = Player.RightMachine.position.x + 4;
+						Player.RightMachine.shoot[i].position.y = Player.RightMachine.position.y;
+
+						Player.RightMachine.shoot[i].speed = 8;
+
+						Player.RightMachine.shoot[i].isShoot = 1;
+						break;
+					}
+				}
+			}
+
+
+			for (int i = 0; i < 100; i++)
+			{
+				if (Player.RightMachine.shoot[i].isShoot == 0)
+				{
+					continue;
+				}
+
+				if (Player.RightMachine.shoot[i].isShoot == 1)
+				{
+					Player.RightMachine.shoot[i].position.y -= Player.RightMachine.shoot[i].speed;
+				}
+
+				if (Player.RightMachine.shoot[i].position.y <= -40)
+				{
+					Player.RightMachine.shoot[i].isShoot = 0;
+				}
+
+			}
+			
+
+		}
+
+		//左子機射撃
+	
+		if (Player.LeftMachine.SpawnFlag == 1)
+		{
+
+			
+
+			Player.LeftMachine.ShootFlag = 0;
+
+			if (Player.LEtimer < 0)
+			{
+				Player.LEtimer = 25;
+
+				Player.LeftMachine.ShootFlag = 1;
+
+			};
+
+			if (Player.LeftMachine.ShootFlag == 1)
+			{
+				for (int i = 0; i < 100; i++)
+				{
+					if (Player.LeftMachine.shoot[i].isShoot == 0)
+					{
+						Player.LeftMachine.shoot[i].position.x = Player.LeftMachine.position.x + 4;
+						Player.LeftMachine.shoot[i].position.y = Player.LeftMachine.position.y;
+
+						Player.LeftMachine.shoot[i].speed = 8;
+
+						Player.LeftMachine.shoot[i].isShoot = 1;
+						break;
+					}
+				}
+			}
+
+
+			for (int i = 0; i < 100; i++)
+			{
+				if (Player.LeftMachine.shoot[i].isShoot == 0)
+				{
+					continue;
+				}
+
+				if (Player.LeftMachine.shoot[i].isShoot == 1)
+				{
+					Player.LeftMachine.shoot[i].position.y -= Player.LeftMachine.shoot[i].speed;
+				}
+
+				if (Player.LeftMachine.shoot[i].position.y <= -40)
+				{
+					Player.LeftMachine.shoot[i].isShoot = 0;
+				}
+
+			}
+
+
+		}
 		//射撃終了
-
 		
-
+		//テスト
 		if (keys[DIK_1])
 		{
 			Player.RightMachine.SpawnFlag = 1;
@@ -300,6 +435,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			Player.barrier3.Flag = 1;
 			Player.barrier4.Flag = 1;
 		}
+		//
+
+
 
 		if (Player.RightMachine.SpawnFlag == 1)
 		{
@@ -434,18 +572,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		for (int i = 0; i < Player.Num; i++)
 		{
-
-
 			Novice::DrawBox(
 				Player.shoot[i].position.x, Player.shoot[i].position.y, 
 				16, 16, 0.0f, BLACK, kFillModeSolid
 			);
 		}
 
-	
-		
+		for (int i = 0; i < Player.RightMachine.Num; i++)
+		{
 
-		
+
+			Novice::DrawBox(
+				Player.RightMachine.shoot[i].position.x, Player.RightMachine.shoot[i].position.y,
+				16, 16, 0.0f, GREEN, kFillModeSolid
+			);
+		}
+		for (int i = 0; i < Player.LeftMachine.Num; i++)
+		{
+
+
+			Novice::DrawBox(
+				Player.LeftMachine.shoot[i].position.x, Player.LeftMachine.shoot[i].position.y,
+				16, 16, 0.0f, BLUE, kFillModeSolid
+			);
+		}
+
 		///
 		/// ↑描画処理ここまで
 		///
