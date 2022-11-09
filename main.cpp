@@ -21,12 +21,26 @@ struct HitBox
 
 };
 
+struct SHOOT
+{
+
+
+	Vector2 position;
+	float speed;
+	int isShoot;
+
+
+};
 struct MACHINE
 {
 	Vector2 position;
 	float speed;
+	int SpawnFlag;
+	int timer;
 
-	int Flag;
+	int ShootFlag;
+	SHOOT shoot[100];
+	int shoottimer;
 
 };
 
@@ -42,16 +56,6 @@ struct BARRIER
 };
 
 
-struct SHOOT
-{
-	
-	
-	Vector2 position;
-	float speed;
-	int isShoot;
-
-
-};
 struct PLAYER
 {
 	Vector2 position;
@@ -75,10 +79,11 @@ struct PLAYER
 	BARRIER barrier2;
 	BARRIER barrier3;
 	BARRIER barrier4;
+
 	const int Num ;
 	SHOOT shoot[100];
-	int shootFlag;
-		int timer;
+	int ShootMainFlag;
+	int timer;
 };
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) 
@@ -90,7 +95,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{0,0},
 		{0,0},
 		5,
-		32,
+		16,
 		WHITE,
 		{0,0},
 
@@ -99,8 +104,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{{0,0},{0,0},{0,0}, {0,0}},
 
 
-		{{0,0},7,0},
-		{{0,0},7,0},
+		{{0,0},7,0,0,0,0 ,100},
+		{{0,0},7,0 ,0,0,0,100},
 
 		{ {0,0},4,0,{0,0}, 0.0f,32, 1.0f / 64.0f * float(M_PI) },
 		{ {0,0},4,0,{0,0}, 1.5875f,32, 1.0f / 64.0f * float(M_PI) },
@@ -228,67 +233,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 		Player.timer--;
-		Novice::ScreenPrintf(0, 40, "%d", Player.timer);
-		Player.shootFlag = 0;
+		
+		Player.ShootMainFlag = 0;
 
 		if (Player.timer < 0)
 		{
-
-			
-
 			if (keys[DIK_SPACE])
 			{
 				Player.timer = 10;
 
-				Player.shootFlag = 1;
+				Player.ShootMainFlag = 1;
 
 			}
-
-			
-
-			
-
-			
-
-
 		};
-		if (Player.shootFlag == 1)
+
+		if (Player.ShootMainFlag == 1)
 		{
-
-
 			for (int i = 0; i < Player.Num; i++)
 			{
-
-
-
-
-
 				if (Player.shoot[i].isShoot == 0)
 				{
-					Player.shoot[i].position.x = Player.PosCenter.x;
+					Player.shoot[i].position.x = Player.PosCenter.x-8;
 					Player.shoot[i].position.y = Player.PosCenter.y;
 
-					Player.shoot[i].speed = 5;
+					Player.shoot[i].speed = 8;
 
 					Player.shoot[i].isShoot = 1;
-
-
-
 					break;
-
-
-
 				}
-
-
 			}
-
-
 		}
-
-		Novice::ScreenPrintf(0, 0, "%d", Player.shoot[1].isShoot);
-
-
 
 
 		for (int i = 0; i < Player.Num; i++)
@@ -300,14 +274,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			if (Player.shoot[i].isShoot == 1)
 			{
-
-
-
 				Player.shoot[i].position.y -= Player.shoot[i].speed;
-
 			}
 
-			if (Player.shoot[i].position.y <= 0)
+			if (Player.shoot[i].position.y <= -40)
 			{
 				Player.shoot[i].isShoot = 0;
 			}
@@ -315,12 +285,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		//射撃終了
 
-
+		
 
 		if (keys[DIK_1])
 		{
-			Player.RightMachine.Flag = 1;
-			Player.LeftMachine.Flag = 1;
+			Player.RightMachine.SpawnFlag = 1;
+			Player.LeftMachine.SpawnFlag = 1;
 		}
 
 		if (keys[DIK_2])
@@ -331,26 +301,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			Player.barrier4.Flag = 1;
 		}
 
-		if (Player.RightMachine.Flag == 1)
+		if (Player.RightMachine.SpawnFlag == 1)
 		{
 
-			Player.RightMachine.position.x = Player.PosCenter.x + 70;
+			Player.RightMachine.position.x = Player.position.x+64;
 			Player.RightMachine.position.y = Player.PosCenter.y - 8;
 		}
 
-		if (Player.LeftMachine.Flag == 1)
+		if (Player.LeftMachine.SpawnFlag == 1)
 		{
 
-			Player.LeftMachine.position.x = Player.PosCenter.x - 102;
+			Player.LeftMachine.position.x = Player.position.x-48;
 			Player.LeftMachine.position.y = Player.PosCenter.y - 8;
 
 
 
 		}
 
-
-
-
+		Novice::ScreenPrintf(0, 40, "%f      %f", Player.position.x, Player.position.y);
+		Novice::ScreenPrintf(0, 60, "%f      %f", Player.LeftMachine.position.x, Player.LeftMachine.position.y);
+		Novice::ScreenPrintf(0, 80, "%f      %f", Player.RightMachine.position.x, Player.RightMachine.position.y);
 
 
 
@@ -438,18 +408,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Novice::DrawBox(
 			Player.position.x,
 			Player.position.y,
-			64, 64, 0.0f, WHITE, kFillModeSolid
+			32, 32, 0.0f, WHITE, kFillModeSolid
 		);
 
 		Novice::DrawBox(
 			Player.RightMachine.position.x,
 			Player.RightMachine.position.y,
-			32, 32, 0.0f, WHITE, kFillModeSolid
+			24, 24, 0.0f, WHITE, kFillModeSolid
 		);
 		Novice::DrawBox(
 			Player.LeftMachine.position.x,
 			Player.LeftMachine.position.y,
-			32, 32, 0.0f, WHITE, kFillModeSolid
+			24, 24, 0.0f, WHITE, kFillModeSolid
 		);
 		
 
@@ -460,7 +430,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			Player.barrier4.position.x, Player.barrier4.position.y, WHITE
 		);
 
-		Novice::DrawEllipse(Player.position.x + 32, Player.position.y + 32, 100, 100, 0.0f, WHITE, kFillModeWireFrame);
+		Novice::DrawEllipse(Player.position.x +16, Player.position.y + 16, 100, 100, 0.0f, WHITE, kFillModeWireFrame);
 
 		for (int i = 0; i < Player.Num; i++)
 		{
