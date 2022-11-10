@@ -457,7 +457,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Novice::ScreenPrintf(0, 40, "%f      %f", Player.position.x, Player.position.y);
 		Novice::ScreenPrintf(0, 60, "%f      %f", Player.LeftMachine.position.x, Player.LeftMachine.position.y);
 		Novice::ScreenPrintf(0, 80, "%f      %f", Player.RightMachine.position.x, Player.RightMachine.position.y);
-
+		//消す
+		Novice::ScreenPrintf(0, 80, "%f      %f", Player.RightMachine.position.x, Player.RightMachine.position.y);
 
 
 
