@@ -635,25 +635,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				mine.hitbox.RiBo.y
 			);
 
-			
+			//プレイヤー主機*地雷当たり判定
 			for (int i = 0; i < Player.Num; i++)
 			{
 
-
-				if (mine.hitbox.LeTo.x<=Player.shoot[i].hitbox.RiTo.x
+				
+				if (mine.position.x-32<=Player.shoot[i].position.x-16
 					&&
-				    Player.shoot[i].hitbox.LeTo.x <= mine.hitbox.RiTo.x
+				    Player.shoot[i].position.x <= mine.position.x+32
 					)
 				{
+				
 					Novice::ScreenPrintf(500, 500, "aaaaa");
-					if (mine.hitbox.LeTo.y <= Player.shoot[i].hitbox.RiTo.y
+					if (mine.position.y - 32 <= Player.shoot[i].position.y-16
 						&&
-						Player.shoot[i].hitbox.LeTo.y <= mine.hitbox.RiTo.y
+						Player.shoot[i].position.y <= mine.position.y+32
 						)
 					{
 						Novice::ScreenPrintf(500, 520, "fbebubfuobew");
 
-
+						mine.SpawnFlag = 3;
 
 					}
 
@@ -662,9 +663,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 			
 		}
-	
-
-
+		if (mine.SpawnFlag==3)
+		{
+			Novice::ScreenPrintf(600, 600, "%d", mine.SpawnFlag);
+		}
 
 
 		
