@@ -53,9 +53,15 @@ struct BARRIER
 struct ENEMY
 {
 	Vector2 position;
+	Vector2 centerpos;
 	float speed;
 	float theta;
 	int radius;
+
+	int SpawnFlag;
+	HitBox hitbox;
+	int hitFlag;
+
 };
 
 struct PLAYER
@@ -134,6 +140,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		Novice::LoadAudio("./Resouce/sound/shot.wav")
 	};
+
+
+	ENEMY mine
+	{
+		{400,0},
+		{0,0},
+		5,
+		0.0f,
+		32,
+		1,
+		//当たり判定
+		{
+		{0,0},
+		{0,0},
+		{0,0},
+		{0,0}
+	     }
+		
+	};
+
+
+
+
+
+
+
 	// ライブラリの初期化
 	
 
@@ -457,9 +489,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Novice::ScreenPrintf(0, 40, "%f      %f", Player.position.x, Player.position.y);
 		Novice::ScreenPrintf(0, 60, "%f      %f", Player.LeftMachine.position.x, Player.LeftMachine.position.y);
 		Novice::ScreenPrintf(0, 80, "%f      %f", Player.RightMachine.position.x, Player.RightMachine.position.y);
-		//消す
-		Novice::ScreenPrintf(0, 80, "%f      %f", Player.RightMachine.position.x, Player.RightMachine.position.y);
-
+		
 
 
 		if (Player.barrier1.Flag == 1)
@@ -533,6 +563,42 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				, 16, 16, 0.0f, RED,
 				kFillModeSolid);
 		}
+
+
+
+		//プレイヤー処理終了
+
+		//地雷処理開始
+		if (mine.SpawnFlag==1)
+		{
+			mine.centerpos.x=mine.position.x+mine.radius;
+			mine.centerpos.y = mine.position.y + mine.radius;
+
+			mine.position.y += mine.speed;
+
+			
+			(
+				mine.radius,
+				mine.centerpos.x,
+				mine.centerpos.y,
+				mine.hitbox.LeTo.x,
+				mine.hitbox.LeTo.y,
+				mine.hitbox.RiTo.x,
+				mine.hitbox.RiTo.y,
+
+				mine.hitbox.LeBo.x,
+				mine.hitbox.LeBo.y,
+				mine.hitbox.RiBo.x,
+				mine.hitbox.RiBo.y
+			);
+
+
+
+
+
+
+		}
+
 		/*
 		if (isenemyAlive == true)
 		{
@@ -588,6 +654,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			24, 24, 0.0f, WHITE, kFillModeSolid
 		);
 		
+		//地雷　
+		if (mine.SpawnFlag == 1)
+		{
+			Novice::DrawBox(
+				mine.position.x, mine.position.y,
+				mine.radius, mine.radius,
+				0.0f, RED, kFillModeWireFrame
+
+			);
+		}
+
+
 
 		Novice::DrawLine(Player.barrier1.position.x, Player.barrier1.position.y,
 			Player.barrier3.position.x, Player.barrier3.position.y, WHITE
@@ -624,6 +702,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				16, 16, 0.0f, BLUE, kFillModeSolid
 			);
 		}
+
+
+
+
 		/*
 		if (isenemyAlive == true)
 		{
