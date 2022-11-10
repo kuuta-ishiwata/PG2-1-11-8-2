@@ -24,8 +24,11 @@ struct HitBox
 struct SHOOT
 {
 	Vector2 position;
+	Vector2 centerpos;
 	float speed;
 	int isShoot;
+	HitBox hitbox;
+	
 };
 struct MACHINE
 {
@@ -130,7 +133,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{ {0,0},4,0,{0,0}, 4.7625f,32, 1.0f / 64.0f * float(M_PI) },
 		100,
 		
-		{{0,0},5,0},
+		{{0,0},{0,0},5,0},
 		0,
 		10,
 		10
@@ -149,7 +152,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		5,
 		0.0f,
 		32,
-		1,
+		0,
 		//当たり判定
 		{
 		{0,0},
@@ -316,8 +319,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				}
 			}
 		}
+
+		for (int i = 0; i < Player.Num; i++)
+		{
+			Player.shoot[i].centerpos.x = Player.shoot[i].position.x + 16;
+			Player.shoot[i].centerpos.x = Player.shoot->position.x + 16;
+
+			/*
+			HitBoxFanction
+			(
+				16,
+				Player.shoot[i].centerpos.x,
+				Player.shoot[i].centerpos.y,
+				Player.shoot[i].
+				
+
+
+			);
+			*/
+
+		}
+
+
+
+
 		Player.RItimer--;
 		Player.LEtimer--;
+
+
+
+
 		//右子機射撃
 		for (int i = 0; i < Player.Num; i++)
 		{
@@ -452,20 +483,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//射撃終了
 		
 		//テスト
-		if (keys[DIK_1])
+		if (keys[DIK_1])//子機出現
 		{
 			Player.RightMachine.SpawnFlag = 1;
 			Player.LeftMachine.SpawnFlag = 1;
 		}
 
-		if (keys[DIK_2])
+		if (keys[DIK_2])//バリア出現
 		{
 			Player.barrier1.Flag = 1;
 			Player.barrier2.Flag = 1;
 			Player.barrier3.Flag = 1;
 			Player.barrier4.Flag = 1;
 		}
-		//
+		if (keys[DIK_3])//地雷出現
+		{
+			mine.SpawnFlag = 1;
+		}
 
 
 
@@ -576,7 +610,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			mine.position.y += mine.speed;
 
-			
+			HitBoxFanction
 			(
 				mine.radius,
 				mine.centerpos.x,
@@ -592,12 +626,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				mine.hitbox.RiBo.y
 			);
 
+			
+			for (int i = 0; i < Player.Num; i++)
+			{
+
+
+				if (mine.hitbox.LeTo.x<=Player.hitbox.LeTo.x
+					&&
+				    Player.hitbox.RiTo.x<=mine.hitbox.RiTo.x
+					)
+				{
+					Novice::ScreenPrintf(500, 500, "fbebubfuobew");
 
 
 
-
-
+				}
+			}
+			
 		}
+	
+
+
+
+
+		
 
 		/*
 		if (isenemyAlive == true)
