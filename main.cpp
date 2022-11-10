@@ -132,6 +132,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	};
 	Sound sound
 	{
+
 		Novice::LoadAudio("./Resouce/sound/shot.wav")
 
 
