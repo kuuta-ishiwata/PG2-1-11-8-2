@@ -325,18 +325,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			Player.shoot[i].centerpos.x = Player.shoot[i].position.x + 16;
 			Player.shoot[i].centerpos.x = Player.shoot->position.x + 16;
 
-			/*
+			
 			HitBoxFanction
 			(
 				16,
 				Player.shoot[i].centerpos.x,
 				Player.shoot[i].centerpos.y,
-				Player.shoot[i].
-				
+				Player.shoot[i].hitbox.LeTo.x,
+				Player.shoot[i].hitbox.LeTo.y,
+				Player.shoot[i].hitbox.RiTo.x,
+			    Player.shoot[i].hitbox.RiTo.y,
 
-
+				Player.shoot[i].hitbox.LeBo.x,
+				Player.shoot[i].hitbox.LeBo.y,
+				Player.shoot[i].hitbox.RiBo.x,
+				Player.shoot[i].hitbox.RiBo.y
 			);
-			*/
+			
+
+
+
 
 		}
 
@@ -499,6 +507,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		if (keys[DIK_3])//地雷出現
 		{
 			mine.SpawnFlag = 1;
+			mine.position.y = 0;
 		}
 
 
@@ -631,13 +640,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			{
 
 
-				if (mine.hitbox.LeTo.x<=Player.hitbox.LeTo.x
+				if (mine.hitbox.LeTo.x<=Player.shoot[i].hitbox.RiTo.x
 					&&
-				    Player.hitbox.RiTo.x<=mine.hitbox.RiTo.x
+				    Player.shoot[i].hitbox.LeTo.x <= mine.hitbox.RiTo.x
 					)
 				{
-					Novice::ScreenPrintf(500, 500, "fbebubfuobew");
+					Novice::ScreenPrintf(500, 500, "aaaaa");
+					if (mine.hitbox.LeTo.y <= Player.shoot[i].hitbox.RiTo.y
+						&&
+						Player.shoot[i].hitbox.LeTo.y <= mine.hitbox.RiTo.y
+						)
+					{
+						Novice::ScreenPrintf(500, 520, "fbebubfuobew");
 
+
+
+					}
 
 
 				}
