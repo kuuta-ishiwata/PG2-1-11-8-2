@@ -23,20 +23,15 @@ struct HitBox
 
 struct SHOOT
 {
-
-
 	Vector2 position;
 	float speed;
 	int isShoot;
-
-
 };
 struct MACHINE
 {
 	Vector2 position;
 	float speed;
 	int SpawnFlag;
-	
 
 	int ShootFlag;
 	
@@ -55,7 +50,15 @@ struct BARRIER
 	int radius;
 	const float kRotaAngle;
 };
+struct ENEMY
+{
+	Vector2 position;
+	float speed;
+	float theta;
+	int radius;
 
+
+};
 
 struct PLAYER
 {
@@ -94,8 +97,6 @@ struct PLAYER
 struct Sound
 {
 	unsigned int shoot;
-
-
 };
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -134,8 +135,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	{
 
 		Novice::LoadAudio("./Resouce/sound/shot.wav")
-
-
 	};
 	// ライブラリの初期化
 	
