@@ -56,8 +56,6 @@ struct ENEMY
 	float speed;
 	float theta;
 	int radius;
-
-
 };
 
 struct PLAYER
@@ -534,6 +532,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				, 16, 16, 0.0f, RED,
 				kFillModeSolid);
 		}
+		/*
+		if (isenemyAlive == true)
+		{
+			enemy.center.X += enemy.speed;
+
+		}
+		if (enemy.center.X + 65 >= 1280)
+		{
+			enemy.speed *= -1;
+			//framcaunt += 8;
+		}
+		if (enemy.center.X - 25 <= 700)
+		{
+			enemy.speed *= -1;
+
+			//framcaunt += 8;
+
+		}
+		framcaunt++;
+		if (framcaunt >= 15)
+		{
+			framcaunt = 0;
+			caunt++;
+			if (caunt >= 3)
+			{
+				caunt = 0;
+			}
+		}
+		*/
 		///
 		/// ↑更新処理ここまで
 		///
@@ -596,7 +623,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				16, 16, 0.0f, BLUE, kFillModeSolid
 			);
 		}
-
+		/*
+		if (isenemyAlive == true)
+		{
+			Novice::ScreenPrintf(0, 100, "tekiON");
+			if (caunt == 0)
+			{
+				Novice::DrawSprite(enemy.center.X, enemy.center.Y, zako1, 1, 1, 0.0f, WHITE);
+			}
+			if (caunt == 1)
+			{
+				Novice::DrawSprite(enemy.center.X, enemy.center.Y, zako2, 1, 1, 0.0f, WHITE);
+			}
+			if (caunt == 2)
+			{
+				Novice::DrawSprite(enemy.center.X, enemy.center.Y, zako3, 1, 1, 0.0f, WHITE);
+			}
+			if (caunt == 3)
+			{
+				Novice::DrawSprite(enemy.center.X, enemy.center.Y, zako4, 1, 1, 0.0f, WHITE);
+			}
+			Novice::DrawBox(enemy.center.X, enemy.center.Y, 10, 10, 0.0f, WHITE, kFillModeSolid);
+		}
+		*/
 		///
 		/// ↑描画処理ここまで
 		///
