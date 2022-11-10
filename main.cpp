@@ -309,7 +309,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		if (Player.RightMachine.SpawnFlag == 1)
 		{
 
-			
+			Novice::ScreenPrintf(0, 0, "a");
 
 			Player.RightMachine.ShootFlag = 0;
 
