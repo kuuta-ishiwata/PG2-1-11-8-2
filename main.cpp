@@ -41,6 +41,7 @@ struct MACHINE
 	const int Num;
 	SHOOT shoot[100];
 	
+
 };
 
 struct BARRIER
@@ -57,6 +58,7 @@ struct ENEMY
 {
 	Vector2 position;
 	Vector2 centerpos;
+	Vector2 move;
 	float speed;
 	float theta;
 	int radius;
@@ -64,6 +66,9 @@ struct ENEMY
 	int SpawnFlag;
 	HitBox hitbox;
 	int hitFlag;
+	const int Num;
+	SHOOT bullet[50];
+	int timer;
 
 };
 
@@ -106,10 +111,18 @@ struct Sound
 	unsigned int shoot;
 };
 
+struct tex
+{
+	unsigned int PlayerBullet;
+	unsigned int RightBullet;
+	unsigned int LeftBullet;
+
+
+};
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) 
 {
-	Novice::Initialize(kWindowTitle, 1280, 720);
+	Novice::Initialize(kWindowTitle, 960 ,780);
 
 	PLAYER Player
 	{
@@ -144,10 +157,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Novice::LoadAudio("./Resouce/sound/shot.wav")
 	};
 
+	tex tex
+	{
+		Novice::LoadTexture("./Resouce/tex/game/PlayerBullet.png"),
+		Novice::LoadTexture("./Resouce/tex/game/RightBullet.png"),
+		Novice::LoadTexture("./Resouce/tex/game/LeftBullet.png")
+
+
+
+
+	};
+
 
 	ENEMY mine
 	{
 		{400,0},
+		{0,0},
 		{0,0},
 		5,
 		0.0f,
@@ -159,7 +184,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{0,0},
 		{0,0},
 		{0,0}
-	     }
+	     },
+		0,
+		{50},
+		3
+
 		
 	};
 
@@ -635,7 +664,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				mine.hitbox.RiBo.y
 			);
 
-			//プレイヤー主機*地雷当たり判定
+		//プレイヤー主機*地雷当たり判定
 			for (int i = 0; i < Player.Num; i++)
 			{
 
@@ -666,44 +695,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		if (mine.SpawnFlag==3)
 		{
 			Novice::ScreenPrintf(600, 600, "%d", mine.SpawnFlag);
+			Novice::ScreenPrintf(600, 620, "%d", mine.Num);
+			
+			for (int i = 0; i < 8; i++)
+			{
+				
+
+				
+
+
+		
+			}
+
+
 		}
 
 
 		
 
-		/*
-		if (isenemyAlive == true)
-		{
-			enemy.center.X += enemy.speed;
-
-		}
-		if (enemy.center.X + 65 >= 1280)
-		{
-			enemy.speed *= -1;
-			//framcaunt += 8;
-		}
-		if (enemy.center.X - 25 <= 700)
-		{
-			enemy.speed *= -1;
-
-			//framcaunt += 8;
-
-		}
-		framcaunt++;
-		if (framcaunt >= 15)
-		{
-			framcaunt = 0;
-			caunt++;
-			if (caunt >= 3)
-			{
-				caunt = 0;
-			}
-		}
-		*/
 		///
 		/// ↑更新処理ここまで
 		///
-
+		
 		///
 		/// ↓描画処理ここから
 		///
@@ -737,7 +750,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			);
 		}
 
-
+	
 
 		Novice::DrawLine(Player.barrier1.position.x, Player.barrier1.position.y,
 			Player.barrier3.position.x, Player.barrier3.position.y, WHITE
@@ -750,57 +763,44 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		for (int i = 0; i < Player.Num; i++)
 		{
-			Novice::DrawBox(
-				Player.shoot[i].position.x, Player.shoot[i].position.y, 
-				16, 16, 0.0f, BLACK, kFillModeSolid
+		
+			Novice::DrawSprite
+			(
+				Player.shoot[i].position.x, Player.shoot[i].position.y,
+				 tex.PlayerBullet,1,1,0.0f,WHITE
 			);
+			
 		}
 
 		for (int i = 0; i < Player.RightMachine.Num; i++)
 		{
-
-
-			Novice::DrawBox(
+			Novice::DrawSprite
+			(
 				Player.RightMachine.shoot[i].position.x, Player.RightMachine.shoot[i].position.y,
-				16, 16, 0.0f, GREEN, kFillModeSolid
+				tex.RightBullet, 1, 1, 0.0f, WHITE
 			);
 		}
 		for (int i = 0; i < Player.LeftMachine.Num; i++)
-		{
-
-
-			Novice::DrawBox(
+		{ 
+			Novice::DrawSprite
+			(
 				Player.LeftMachine.shoot[i].position.x, Player.LeftMachine.shoot[i].position.y,
-				16, 16, 0.0f, BLUE, kFillModeSolid
+				tex.LeftBullet, 1, 1, 0.0f, WHITE
 			);
 		}
 
-
-
-
-		/*
-		if (isenemyAlive == true)
+		for (int i = 0; i < mine.Num; i++)
 		{
-			Novice::ScreenPrintf(0, 100, "tekiON");
-			if (caunt == 0)
-			{
-				Novice::DrawSprite(enemy.center.X, enemy.center.Y, zako1, 1, 1, 0.0f, WHITE);
-			}
-			if (caunt == 1)
-			{
-				Novice::DrawSprite(enemy.center.X, enemy.center.Y, zako2, 1, 1, 0.0f, WHITE);
-			}
-			if (caunt == 2)
-			{
-				Novice::DrawSprite(enemy.center.X, enemy.center.Y, zako3, 1, 1, 0.0f, WHITE);
-			}
-			if (caunt == 3)
-			{
-				Novice::DrawSprite(enemy.center.X, enemy.center.Y, zako4, 1, 1, 0.0f, WHITE);
-			}
-			Novice::DrawBox(enemy.center.X, enemy.center.Y, 10, 10, 0.0f, WHITE, kFillModeSolid);
+
+			Novice::DrawEllipse(
+				mine.bullet[i].position.x,
+				mine.bullet[i].position.y,
+				16, 16, 0.0f, GREEN, kFillModeSolid
+			);
+
 		}
-		*/
+
+
 		///
 		/// ↑描画処理ここまで
 		///
