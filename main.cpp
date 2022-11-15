@@ -69,7 +69,12 @@ struct ENEMY
 	const int Num;
 	SHOOT bullet[50];
 	int timer;
+
+
+	
 	float MineTheta[16];
+	Vector2 MineMove[16];
+	int Minetimer;
 };
 
 struct PLAYER
@@ -192,15 +197,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		
 	};
 
-
-
 	for (int i = 0; i < 16; i++)
 	{
-
-		mine.MineTheta[i] += 1.0 / 4.0 * M_PI;
+		mine.bullet[i].speed = 2;
 	}
 
+	
 
+		mine.MineTheta[0] = 0.0f * M_PI;
+		mine.MineTheta[1] = 1.0f /2.0* M_PI;
+
+		mine.MineTheta[2] = 3.0f / 2.0f * M_PI;
+		mine.MineTheta[3] = 1.0f* M_PI;
+		
+		mine.MineTheta[4] = 1.0f / 4.0f * M_PI;
+		mine.MineTheta[5] = 3.0f / 4.0f * M_PI;
+
+		mine.MineTheta[6] = 5.0f / 4.0f * M_PI;
+		mine.MineTheta[7] = 7.0f / 4.0f * M_PI;
+
+		mine.MineTheta[8] = 1.0f/8.0 * M_PI;
+		mine.MineTheta[9] = 3.0f / 8.0 * M_PI;
+
+		mine.MineTheta[10] = 5.0f / 8.0f * M_PI;
+		mine.MineTheta[11] = 7.0f/8.0 * M_PI;
+
+		mine.MineTheta[12] = 9.0f / 8.0f * M_PI;
+		mine.MineTheta[13] = 11.0f / 8.0f * M_PI;
+
+		mine.MineTheta[14] = 13.0f / 8.0f * M_PI;
+		mine.MineTheta[15] = 15.0f / 8.0f * M_PI;
 
 	// ライブラリの初期化
 	
@@ -688,6 +714,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 						Novice::ScreenPrintf(500, 520, "fbebubfuobew");
 
 						mine.SpawnFlag = 3;
+						for (int i = 0; i < 16; i++)
+						{
+							mine.bullet[i].position.x = mine.position.x;
+							mine.bullet[i].position.y = mine.position.y;
+
+						}
 
 					}
 
@@ -696,27 +728,51 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 			
 		}
+
+
+
 		if (mine.SpawnFlag==3)
 		{
 			Novice::ScreenPrintf(600, 600, "%d", mine.SpawnFlag);
 			Novice::ScreenPrintf(600, 620, "%d", mine.Num);
-			
-			for (int i = 0; i < 8; i++)
+			mine.Minetimer++;
+			if (mine.Minetimer<=40)
 			{
-				
-
-				
 
 
-		
+				for (int i = 0; i < 8; i++)
+				{
+					WASDPush(mine.MineTheta[i], mine.MineMove[i].x, mine.MineMove[i].y, mine.bullet[i].speed);
+
+					mine.bullet[i].position.x += mine.MineMove[i].x;
+					mine.bullet[i].position.y += mine.MineMove[i].y;
+
+
+				}
 			}
+			if (mine.Minetimer>=40&& mine.Minetimer <= 80)
+			{
+				for (int i = 8; i < 16; i++)
+				{
+					WASDPush(mine.MineTheta[i], mine.MineMove[i].x, mine.MineMove[i].y, mine.bullet[i].speed);
 
+					mine.bullet[i].position.x += mine.MineMove[i].x;
+					mine.bullet[i].position.y += mine.MineMove[i].y;
+
+
+				}
+			}
+			if (mine.Minetimer>=100)
+			{
+				mine.SpawnFlag = 4;
+			}
+		}
+		if (mine.SpawnFlag==4)
+		{
+			mine.Minetimer = 0;
 
 		}
-
-
 		
-
 		///
 		/// ↑更新処理ここまで
 		///
@@ -793,17 +849,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			);
 		}
 
-		for (int i = 0; i < mine.Num; i++)
+		if (mine.SpawnFlag == 3)
 		{
 
-			Novice::DrawEllipse(
-				mine.bullet[i].position.x,
-				mine.bullet[i].position.y,
-				16, 16, 0.0f, GREEN, kFillModeSolid
-			);
 
+			for (int i = 0; i < 16; i++)
+			{
+
+				Novice::DrawEllipse(
+					mine.bullet[i].position.x,
+					mine.bullet[i].position.y,
+					16, 16, 0.0f, GREEN, kFillModeSolid
+				);
+
+			}
 		}
-
 
 		///
 		/// ↑描画処理ここまで
