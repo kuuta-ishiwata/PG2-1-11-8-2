@@ -69,7 +69,7 @@ struct ENEMY
 	const int Num;
 	SHOOT bullet[50];
 	int timer;
-
+	float MineTheta[16];
 };
 
 struct PLAYER
@@ -194,7 +194,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 
+	for (int i = 0; i < 16; i++)
+	{
 
+		mine.MineTheta[i] += 1.0 / 4.0 * M_PI;
+	}
 
 
 
