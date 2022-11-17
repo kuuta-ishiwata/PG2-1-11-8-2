@@ -113,6 +113,21 @@ struct PLAYER
 	int RItimer;
 };
 
+struct Boss
+{
+	Vector2 position;
+	Vector2 center;
+	float speed;
+	int radius;
+	Vector2 move;
+	float theta;
+
+
+
+
+
+};
+
 
 struct Sound
 {
@@ -126,8 +141,18 @@ struct tex
 	unsigned int RightBullet;
 	unsigned int LeftBullet;
 	unsigned int Explosion;
+	unsigned int starback;
+};
+
+
+struct scroll
+{
+	Vector2 FrontPosition;
+	Vector2 BackPosition;
+	float speed;
 
 };
+
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) 
 {
@@ -172,13 +197,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Novice::LoadTexture("./Resouce/tex/game/PlayerBullet.png"),
 		Novice::LoadTexture("./Resouce/tex/game/RightBullet.png"),
 		Novice::LoadTexture("./Resouce/tex/game/LeftBullet.png"),
-		Novice::LoadTexture("./Resouce/tex/enemy/Explosion.png")
+		Novice::LoadTexture("./Resouce/tex/enemy/Explosion.png"),
+		Novice::LoadTexture("./Resouce/tex/game/ShootingBack.png")
 
 
 
 
 	};
+	Boss boss
+	{
+		{336,60},
+		{0,0},
+		5,
+		64,
+		{0,0},
+		0.0f
 
+
+
+	};
 
 	ENEMY zako
 	{
@@ -190,6 +227,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		32,
 
 	};
+
+	scroll scroll
+	{
+		{0,0},
+		{0,-1500},
+		5
+
+
+
+	};
+
 	ENEMY mine
 	{
 		{400,0},
@@ -212,6 +260,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		
 	};
+
 
 	for (int i = 0; i < 100; i++)
 	{
@@ -648,11 +697,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				Player.barrier1.position.y
 
 			);
-
-			Novice::DrawEllipse(
-				Player.barrier1.position.x, Player.barrier1.position.y
-				, 16, 16, 0.0f, RED,
-				kFillModeSolid);
 		}
 
 
@@ -667,10 +711,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				Player.barrier2.position.y
 
 			);
-			Novice::DrawEllipse(
-				Player.barrier2.position.x, Player.barrier2.position.y
-				, 16, 16, 0.0f, RED,
-				kFillModeSolid);
+	
 		}
 
 		if (Player.barrier4.Flag == 1)
@@ -684,11 +725,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				Player.barrier4.position.y
 
 			);
-			Novice::DrawEllipse(
-				Player.barrier4.position.x,
-				Player.barrier4.position.y,
-				16, 16, 0.0f, RED,
-				kFillModeSolid);
+
 		}
 
 		if (Player.barrier3.Flag == 1)
@@ -703,10 +740,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			);
 
-			Novice::DrawEllipse(
-				Player.barrier3.position.x, Player.barrier3.position.y
-				, 16, 16, 0.0f, RED,
-				kFillModeSolid);
+
 		}
 
 
@@ -760,6 +794,66 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 						Novice::ScreenPrintf(500, 520, "fbebubfuobew");
 
 						Player.shoot[i].isShoot = 0;
+
+
+						mine.SpawnFlag = 3;
+						for (int i = 0; i < 16; i++)
+						{
+							mine.bullet[i].position.x = mine.position.x;
+							mine.bullet[i].position.y = mine.position.y;
+
+						}
+
+					}
+				}
+
+
+				if (mine.position.x - 32 <= Player.RightMachine.shoot[i].position.x - 16
+					&&
+					Player.RightMachine.shoot[i].position.x <= mine.position.x + 32
+					)
+				{
+
+					Novice::ScreenPrintf(500, 500, "aaaaa");
+					if (mine.position.y - 32 <= Player.RightMachine.shoot[i].position.y - 16
+						&&
+						Player.RightMachine.shoot[i].position.y <= mine.position.y + 32
+						)
+					{
+						Novice::ScreenPrintf(500, 520, "fbebubfuobew");
+
+						Player.RightMachine.shoot[i].isShoot = 0;
+
+
+						mine.SpawnFlag = 3;
+						for (int i = 0; i < 16; i++)
+						{
+							mine.bullet[i].position.x = mine.position.x;
+							mine.bullet[i].position.y = mine.position.y;
+
+						}
+
+					}
+
+
+				}
+				
+
+				if (mine.position.x - 32 <= Player.LeftMachine.shoot[i].position.x - 16
+					&&
+					Player.LeftMachine.shoot[i].position.x <= mine.position.x + 32
+					)
+				{
+
+					Novice::ScreenPrintf(500, 500, "aaaaa");
+					if (mine.position.y - 32 <= Player.LeftMachine.shoot[i].position.y - 16
+						&&
+						Player.LeftMachine.shoot[i].position.y <= mine.position.y + 32
+						)
+					{
+						Novice::ScreenPrintf(500, 520, "fbebubfuobew");
+
+						Player.LeftMachine.shoot[i].isShoot = 0;
 
 
 						mine.SpawnFlag = 3;
@@ -898,29 +992,96 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 				}
+
+				if (zako.position.x - 32 <= Player.RightMachine.shoot[i].position.x-16
+					&&
+					Player.RightMachine.shoot[i].position.x  <= zako.position.x + 32
+					)
+				{
+
+					Novice::ScreenPrintf(500, 500, "kkkkkkkkk");
+					if (zako.position.y - 32 <= Player.RightMachine.shoot[i].position.y-16
+						&&
+						Player.RightMachine.shoot[i].position.y  <= zako.position.y + 32
+						)
+					{
+						Novice::ScreenPrintf(500, 520, "zzzzzzzz");
+
+						isenemyAlive = 2;
+
+						if (!Novice::IsPlayingAudio(sound.Explosion))
+						{
+							Novice::PlayAudio(sound.Explosion, false, 1.0);
+						}
+
+					}
+				}
+
+				if (zako.position.x - 32 <= Player.LeftMachine.shoot[i].position.x - 16
+					&&
+					Player.LeftMachine.shoot[i].position.x <= zako.position.x + 32
+					)
+				{
+
+					Novice::ScreenPrintf(500, 500, "kkkkkkkkk");
+					if (zako.position.y - 32 <= Player.LeftMachine.shoot[i].position.y - 16
+						&&
+						Player.LeftMachine.shoot[i].position.y <= zako.position.y + 32
+						)
+					{
+						Novice::ScreenPrintf(500, 520, "zzzzzzzz");
+
+						isenemyAlive = 2;
+
+						if (!Novice::IsPlayingAudio(sound.Explosion))
+						{
+							Novice::PlayAudio(sound.Explosion, false, 1.0);
+						}
+
+					}
+				}
 			}
 
 		}
 		if (isenemyAlive==2)
 		{
 			Sprite4Fanction(zakoriactiontimer, 60, zakoriactionFrame, 0, 15, 30, 45);
-			Tex4Sprite(zakoriactionFrame, zako.position.x, zako.position.y, 0, 0, 65, 0, 130, 0, 195, 0,
-				tex.Explosion, 64, 0.25, 1, 0.0f
-			);
+			
 			
 			if (zakoriactiontimer>=59)
 			{
 				isenemyAlive = 0;
 			}
 		}
+
+
+
+		//ぼす処理開始
+
+		
+
+
+
 		///
 		/// ↑更新処理ここまで
 		///
-		
+		scroll.FrontPosition.y += scroll.speed;
+		scroll.BackPosition.y += scroll.speed;
+		if (scroll.BackPosition.y>=1500)
+		{
+			scroll.BackPosition.y = -1500;
+		}
+		if (scroll.FrontPosition.y>=1500)
+		{
+			scroll.FrontPosition.y = -1500;
+		}
 		///
 		/// ↓描画処理ここから
 		///
 		/// 
+		Novice::DrawSprite(scroll.FrontPosition.x, scroll.FrontPosition.y , tex.starback, 1, 1, 0.0f, WHITE);
+		Novice::DrawSprite(scroll.BackPosition.x, scroll.BackPosition.y, tex.starback, 1, 1, 0.0f, WHITE);
+
 
 		Novice::DrawBox(
 			Player.position.x,
@@ -991,7 +1152,41 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				tex.LeftBullet, 1, 1, 0.0f, WHITE
 			);
 		}
+		if (Player.barrier1.Flag == 1)
+		{
+			Novice::DrawEllipse(
+				Player.barrier1.position.x, Player.barrier1.position.y
+				, 16, 16, 0.0f, RED,
+				kFillModeSolid);
+		}
 
+
+		if (Player.barrier2.Flag == 1)
+		{
+			Novice::DrawEllipse(
+				Player.barrier2.position.x, Player.barrier2.position.y
+				, 16, 16, 0.0f, RED,
+				kFillModeSolid);
+		}
+
+		if (Player.barrier4.Flag == 1)
+		{
+
+			Novice::DrawEllipse(
+				Player.barrier4.position.x,
+				Player.barrier4.position.y,
+				16, 16, 0.0f, RED,
+				kFillModeSolid);
+		}
+
+		if (Player.barrier3.Flag == 1)
+		{
+
+			Novice::DrawEllipse(
+				Player.barrier3.position.x, Player.barrier3.position.y
+				, 16, 16, 0.0f, RED,
+				kFillModeSolid);
+		}
 		if (mine.SpawnFlag == 3)
 		{
 
@@ -1033,6 +1228,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 			//Novice::DrawBox(enemy.center.X, enemy.center.Y, 10, 10, 0.0f, WHITE, kFillModeSolid);
 		}
+		if (isenemyAlive == 2)
+		{
+			Tex4Sprite(zakoriactionFrame, zako.position.x, zako.position.y, 0, 0, 65, 0, 130, 0, 195, 0,
+				tex.Explosion, 64, 0.25, 1, 0.0f
+			);
+		}
+
+		Novice::DrawBox(boss.position.x, boss.position.y, 96, 96, 0.0f, WHITE, kFillModeSolid);
 
 
 		///
