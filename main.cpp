@@ -3,7 +3,10 @@
 #include<math.h>
 #include<stdlib.h>
 #include<time.h>
+
 #include<player.h>
+#include<KuroSprite.h>
+
 
 const char kWindowTitle[] = "学籍番号";
 struct Vector2
@@ -114,6 +117,7 @@ struct PLAYER
 struct Sound
 {
 	unsigned int shoot;
+	unsigned int Explosion;
 };
 
 struct tex
@@ -121,7 +125,7 @@ struct tex
 	unsigned int PlayerBullet;
 	unsigned int RightBullet;
 	unsigned int LeftBullet;
-
+	unsigned int Explosion;
 
 };
 // Windowsアプリでのエントリーポイント(main関数)
@@ -159,14 +163,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Sound sound
 	{
 
-		Novice::LoadAudio("./Resouce/sound/shot.wav")
+		Novice::LoadAudio("./Resouce/sound/shot.wav"),
+		Novice::LoadAudio("./Resouce/sound/hit.wav")
 	};
 
 	tex tex
 	{
 		Novice::LoadTexture("./Resouce/tex/game/PlayerBullet.png"),
 		Novice::LoadTexture("./Resouce/tex/game/RightBullet.png"),
-		Novice::LoadTexture("./Resouce/tex/game/LeftBullet.png")
+		Novice::LoadTexture("./Resouce/tex/game/LeftBullet.png"),
+		Novice::LoadTexture("./Resouce/tex/enemy/Explosion.png")
 
 
 
@@ -207,6 +213,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		
 	};
 
+	for (int i = 0; i < 100; i++)
+	{
+		Player.shoot[i].position = { -100,0 };
+
+	}
+
 	for (int i = 0; i < 16; i++)
 	{
 		mine.bullet[i].speed = 2;
@@ -241,26 +253,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// ライブラリの初期化
 
 		//
-		const int bullet = 200;
-		int bulletX[bullet] = { 0 };
-		int bulletY[bullet] = { 0 };
-		int bulletradius[bullet] = { 0 };
-
-		for (int i = 0; i < bullet; i++)
-		{
-			bulletradius[i] = 16;
-		}
-
-		int bulletspeed[bullet] = { 0 };
-		int isbulletshot[bullet];
-
-		for (int i = 0; i < bullet; i++)
-		{
-			bulletspeed[i] = 4;
-			isbulletshot[i] = { false };
-		}
-
-		int isenemyAlive = true;
+		
+		int isenemyAlive = 0;
+		int zakoriactiontimer = 0;
+		int zakoriactionFrame = 0;
 		int framcaunt = 0;
 		int caunt = 0;
 		int speedx = 5;
@@ -424,7 +420,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		for (int i = 0; i < Player.Num; i++)
 		{
 			Player.shoot[i].centerpos.x = Player.shoot[i].position.x + 16;
-			Player.shoot[i].centerpos.x = Player.shoot->position.x + 16;
+			Player.shoot[i].centerpos.x = Player.shoot[i].position.x + 16;
 
 			
 			HitBoxFanction
@@ -458,11 +454,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 
-		//右子機射撃
+		
 		for (int i = 0; i < Player.Num; i++)
 		{
 			if (Player.shoot[i].isShoot == 0)
 			{
+				Player.shoot[i].position = { -100,0 };
 				continue;
 			}
 
@@ -471,13 +468,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				Player.shoot[i].position.y -= Player.shoot[i].speed;
 			}
 
-			if (Player.shoot[i].position.y <= -40)
+			if (Player.shoot[i].position.y <= 0)
 			{
 				Player.shoot[i].isShoot = 0;
+				//Player.shoot[i].position = { -100,0 };
+
 			}
 
-		}
-
+		}//右子機射撃
 		if (Player.RightMachine.SpawnFlag == 1)
 		{
 
@@ -515,6 +513,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			{
 				if (Player.RightMachine.shoot[i].isShoot == 0)
 				{
+					Player.RightMachine.shoot[i].position = { -100,0 };
 					continue;
 				}
 
@@ -526,6 +525,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				if (Player.RightMachine.shoot[i].position.y <= -40)
 				{
 					Player.RightMachine.shoot[i].isShoot = 0;
+				
 				}
 			}
 		}
@@ -569,6 +569,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			{
 				if (Player.LeftMachine.shoot[i].isShoot == 0)
 				{
+					Player.LeftMachine.shoot[i].position = { -100,0 };
 					continue;
 				}
 
@@ -607,7 +608,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			mine.SpawnFlag = 1;
 			mine.position.y = 0;
 		}
-
+		if (keys[DIK_4])//zako1出現
+		{
+			isenemyAlive = 1;
+		}
 
 
 		if (Player.RightMachine.SpawnFlag == 1)
@@ -755,6 +759,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					{
 						Novice::ScreenPrintf(500, 520, "fbebubfuobew");
 
+						Player.shoot[i].isShoot = 0;
+
+
 						mine.SpawnFlag = 3;
 						for (int i = 0; i < 16; i++)
 						{
@@ -815,50 +822,97 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		}
 		//地雷処理終了
-		 //雑魚１動き
-
-
-		if (isenemyAlive == true)
+		// 
+		// 
+		// 
+		 
+		
+		
+		//雑魚１動き
+		if (isenemyAlive==0)
+		{
+			zako.position.y = -50;
+		}
+		if (isenemyAlive == 1)
 		{
 			zako.position.x += speedx;
-		}
 
-		if (isenemyAlive == true)
-		{
 			zako.position.y += speedy;
-		}
-
-		if (zako.position.x >= 960)
-		{
-			speedx = -10;
-		}
-		if (zako.position.x <= 0)
-		{
-			speedx = 10;
-		}
-
-		framcaunt++;
-		Novice::ScreenPrintf(200, 0, "%d", framcaunt);
-		if (framcaunt >= 0)
-		{
-			caunt = 1;
-
-		}
-		if (framcaunt >= 10)
-		{
-			caunt = 2;
-		}
-		if (framcaunt >= 20)
-		{
-			caunt = 3;
-		}
-		if (framcaunt >= 30)
-		{
-			caunt = 0;
-			framcaunt = 0;
-		}
 
 
+			if (zako.position.x >= 960)
+			{
+				speedx = -10;
+			}
+			if (zako.position.x <= 0)
+			{
+				speedx = 10;
+			}
+
+			framcaunt++;
+			Novice::ScreenPrintf(200, 0, "%d", framcaunt);
+			if (framcaunt >= 0)
+			{
+				caunt = 1;
+
+			}
+			if (framcaunt >= 10)
+			{
+				caunt = 2;
+			}
+			if (framcaunt >= 20)
+			{
+				caunt = 3;
+			}
+			if (framcaunt >= 30)
+			{
+				caunt = 0;
+				framcaunt = 0;
+			}
+
+			for (int i = 0; i < Player.Num; i++)
+			{
+
+
+				if (zako.position.x - 32 <= Player.shoot[i].position.x - 16
+					&&
+					Player.shoot[i].position.x <= zako.position.x + 32
+					)
+				{
+
+					Novice::ScreenPrintf(500, 500, "kkkkkkkkk");
+					if (zako.position.y - 32 <= Player.shoot[i].position.y - 16
+						&&
+						Player.shoot[i].position.y <= zako.position.y + 32
+						)
+					{
+						Novice::ScreenPrintf(500, 520, "zzzzzzzz");
+
+						isenemyAlive=2;
+						if (!Novice::IsPlayingAudio(sound.Explosion))
+						{
+							Novice::PlayAudio(sound.Explosion, false, 1.0);
+						}
+
+					}
+
+
+				}
+			}
+
+		}
+		if (isenemyAlive==2)
+		{
+			Sprite4Fanction(zakoriactiontimer, 60, zakoriactionFrame, 0, 15, 30, 45);
+			Tex4Sprite(zakoriactionFrame, zako.position.x, zako.position.y, 0, 0, 65, 0, 130, 0, 195, 0,
+				tex.Explosion, 64, 0.25, 1, 0.0f
+			);
+			
+			if (zakoriactiontimer>=59)
+			{
+				isenemyAlive = 0;
+			}
+		}
 		///
 		/// ↑更新処理ここまで
 		///
@@ -906,16 +960,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		);
 
 		Novice::DrawEllipse(Player.position.x +16, Player.position.y + 16, 100, 100, 0.0f, WHITE, kFillModeWireFrame);
-
+	
 		for (int i = 0; i < Player.Num; i++)
 		{
-		
-			Novice::DrawSprite
-			(
-				Player.shoot[i].position.x, Player.shoot[i].position.y,
-				 tex.PlayerBullet,1,1,0.0f,WHITE
-			);
-			
+			if (Player.shoot[i].isShoot==1)
+			{
+
+
+				Novice::DrawSprite
+				(
+					Player.shoot[i].position.x, Player.shoot[i].position.y,
+					tex.PlayerBullet, 1, 1, 0.0f, WHITE
+				);
+			}
 		}
 
 		for (int i = 0; i < Player.RightMachine.Num; i++)
@@ -952,15 +1009,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 
 		//雑魚１描画
-		for (int i = 0; i < bullet; i++)
-		{
-			if (isbulletshot[i] == true)
-			{
-				Novice::DrawBox(bulletX[i], bulletY[i], bulletX[i], bulletY[i], 0.0f, WHITE, kFillModeSolid);
-			}
-		}
+	
 
-		if (isenemyAlive == true)
+		if (isenemyAlive == 1)
 		{
 			Novice::ScreenPrintf(0, 100, "tekiON");
 			Novice::ScreenPrintf(0, 200, "%d", caunt);

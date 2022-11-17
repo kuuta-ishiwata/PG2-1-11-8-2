@@ -99,6 +99,7 @@
     <ClCompile Include="C:\KamataEngine\Adapter\Novice.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="KuroSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\DirectXGame\math\MathUtility.h" />
@@ -128,6 +129,7 @@
     <ClInclude Include="C:\KamataEngine\DirectXGame\scene\GameScene.h" />
     <ClInclude Include="C:\KamataEngine\Adapter\Novice.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="KuroSprite.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

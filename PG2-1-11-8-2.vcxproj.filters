@@ -36,6 +36,7 @@
       <Filter>KamataEngine\Adapter</Filter>
     </ClCompile>
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="KuroSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -117,5 +118,6 @@
       <Filter>KamataEngine\Include</Filter>
     </ClInclude>
     <ClInclude Include="player.h" />
+    <ClInclude Include="KuroSprite.h" />
   </ItemGroup>
 </Project>
