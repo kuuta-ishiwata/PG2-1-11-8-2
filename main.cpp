@@ -174,6 +174,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	};
 
 
+	ENEMY zako
+	{
+		{900,50},
+		{50,50},
+		5,
+		5,
+		0.0f,
+		32,
+
+	};
 	ENEMY mine
 	{
 		{400,0},
@@ -229,7 +239,39 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		mine.MineTheta[15] = 15.0f / 8.0f * M_PI;
 
 	// ライブラリの初期化
-	
+
+		//
+		const int bullet = 200;
+		int bulletX[bullet] = { 0 };
+		int bulletY[bullet] = { 0 };
+		int bulletradius[bullet] = { 0 };
+
+		for (int i = 0; i < bullet; i++)
+		{
+			bulletradius[i] = 16;
+		}
+
+		int bulletspeed[bullet] = { 0 };
+		int isbulletshot[bullet];
+
+		for (int i = 0; i < bullet; i++)
+		{
+			bulletspeed[i] = 4;
+			isbulletshot[i] = { false };
+		}
+
+		int isenemyAlive = true;
+		int framcaunt = 0;
+		int caunt = 0;
+		int speedx = 5;
+		int speedy = 1;
+		///
+
+		int zako1 = Novice::LoadTexture("./Resouce/tex/enemy/zako1.png");
+		int zako2 = Novice::LoadTexture("./Resouce/tex/enemy/zako2.png");
+		int zako3 = Novice::LoadTexture("./Resouce/tex/enemy/zako3.png");
+		int zako4 = Novice::LoadTexture("./Resouce/tex/enemy/zako4.png");
+		//int tama = Novice::LoadTexture("./TDtama.png");
 
 	// キー入力結果を受け取る箱
 	char keys[256] = {0};
@@ -485,10 +527,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				{
 					Player.RightMachine.shoot[i].isShoot = 0;
 				}
-
 			}
-			
-
 		}
 
 		//左子機射撃
@@ -694,6 +733,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				mine.hitbox.RiBo.y
 			);
 
+
+        
+
 		//プレイヤー主機*地雷当たり判定
 			for (int i = 0; i < Player.Num; i++)
 			{
@@ -762,7 +804,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 				}
 			}
-			if (mine.Minetimer>=100)
+			if (mine.Minetimer>=80)
 			{
 				mine.SpawnFlag = 4;
 			}
@@ -772,7 +814,51 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			mine.Minetimer = 0;
 
 		}
-		
+		//地雷処理終了
+		 //雑魚１動き
+
+
+		if (isenemyAlive == true)
+		{
+			zako.position.x += speedx;
+		}
+
+		if (isenemyAlive == true)
+		{
+			zako.position.y += speedy;
+		}
+
+		if (zako.position.x >= 960)
+		{
+			speedx = -10;
+		}
+		if (zako.position.x <= 0)
+		{
+			speedx = 10;
+		}
+
+		framcaunt++;
+		Novice::ScreenPrintf(200, 0, "%d", framcaunt);
+		if (framcaunt >= 0)
+		{
+			caunt = 1;
+
+		}
+		if (framcaunt >= 10)
+		{
+			caunt = 2;
+		}
+		if (framcaunt >= 20)
+		{
+			caunt = 3;
+		}
+		if (framcaunt >= 30)
+		{
+			caunt = 0;
+			framcaunt = 0;
+		}
+
+
 		///
 		/// ↑更新処理ここまで
 		///
@@ -864,6 +950,39 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			}
 		}
+
+		//雑魚１描画
+		for (int i = 0; i < bullet; i++)
+		{
+			if (isbulletshot[i] == true)
+			{
+				Novice::DrawBox(bulletX[i], bulletY[i], bulletX[i], bulletY[i], 0.0f, WHITE, kFillModeSolid);
+			}
+		}
+
+		if (isenemyAlive == true)
+		{
+			Novice::ScreenPrintf(0, 100, "tekiON");
+			Novice::ScreenPrintf(0, 200, "%d", caunt);
+			if (caunt == 0)
+			{
+				Novice::DrawSprite(zako.position.x, zako.position.y, zako1, 1, 1, 0.0f, WHITE);
+			}
+			if (caunt == 1)
+			{
+				Novice::DrawSprite(zako.position.x, zako.position.y, zako2, 1, 1, 0.0f, WHITE);
+			}
+			if (caunt == 2)
+			{
+				Novice::DrawSprite(zako.position.x, zako.position.y, zako3, 1, 1, 0.0f, WHITE);
+			}
+			if (caunt == 3)
+			{
+				Novice::DrawSprite(zako.position.x, zako.position.y, zako4, 1, 1, 0.0f, WHITE);
+			}
+			//Novice::DrawBox(enemy.center.X, enemy.center.Y, 10, 10, 0.0f, WHITE, kFillModeSolid);
+		}
+
 
 		///
 		/// ↑描画処理ここまで
