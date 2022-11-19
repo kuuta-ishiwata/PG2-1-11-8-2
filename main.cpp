@@ -138,6 +138,12 @@ struct Boss
 	Vector2 RightMove[100];
 	Vector2 LeftMove[100];
 
+	SHOOT RightLaser[200];
+	SHOOT LeftLaser[200];
+	int RightLaserFlag;
+	int LeftLazerFlag;
+	Vector2 PastPlayerPosition;
+	int LaserCount;
 };
 
 
@@ -308,6 +314,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	}
 	boss.bullettimer = 0;
 	const int bossbulletNum = 100;
+	boss.RightLaserFlag=0;
+	boss.LeftLazerFlag=0;
+
+
 	//地雷弾初期化
 
 		mine.MineTheta[0] = 0.0f * M_PI;
@@ -1105,6 +1115,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			boss.SpawnFlag = 1;
 		
 		}
+
+		if (keys[DIK_9])
+		{
+			boss.SpawnFlag = 2;
+			
+		}
 		for (int i = 0; i < 100; i++)
 		{
 			if (boss.MainShoot[i].position.x <= Player.shoot[i].position.x + 32
@@ -1316,7 +1332,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 
 
-		if (boss.SpawnFlag==1)
+		if (boss.SpawnFlag>=1)
 		{
 			
 		   //動き処理
@@ -1493,18 +1509,64 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				}
 			}
 
-
-
-
-
-
-
-
-
 		}
+		//レーザー処理
 		
+	/*
+		if (boss.SpawnFlag >= 2)
+		{
+			boss.RightLaserFlag = 1;
+		
+		}
+			
+	
+		
+			if (boss.RightLaserFlag == 1)
+			{
+				for (int i = 0; i < 100; i++)
+				{
+					if (boss.RightLaser[i].isShoot == 0)
+					{
+						boss.RightLaser[i].position.x = 960;
+						boss.RightLaser[i].position.y = 400;
 
+						boss.RightLaser[i].speed = 8;
 
+						boss.RightLaser[i].isShoot = 1;
+						break;
+					}
+				}
+
+				if (boss.RightLaser[99].isShoot==1)
+				{
+					boss.RightLaserFlag = 0;
+					
+				}
+
+				for (int i = 0; i < 100; i++)
+				{
+					if (boss.RightLaser[i].isShoot == 0)
+					{
+						boss.RightLaser[i].position = { -100,0 };
+						continue;
+					}
+
+					if (boss.RightLaser[i].isShoot == 1)
+					{
+						boss.RightLaser[i].position.x -= boss.RightLaser[i].speed;
+					}
+					
+					if (boss.RightLaser[i].position.x <= -40)
+					{
+						boss.RightLaser[i].isShoot = 0;
+
+					}
+				}
+
+			}
+
+		
+*/
 
 
 
@@ -1527,8 +1589,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		/// ↓描画処理ここから
 		///
 		/// 
-		//Novice::DrawSprite(scroll.FrontPosition.x, scroll.FrontPosition.y , tex.starback, 1, 1, 0.0f, WHITE);
-		//Novice::DrawSprite(scroll.BackPosition.x, scroll.BackPosition.y, tex.starback, 1, 1, 0.0f, WHITE);
+//		Novice::DrawSprite(scroll.FrontPosition.x, scroll.FrontPosition.y , tex.starback, 1, 1, 0.0f, WHITE);
+//		Novice::DrawSprite(scroll.BackPosition.x, scroll.BackPosition.y, tex.starback, 1, 1, 0.0f, WHITE);
 
 
 		Novice::DrawBox(
@@ -1699,7 +1761,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				tex.Explosion, 64, 0.25, 1, 0.0f
 			);
 		}
-		if (boss.SpawnFlag == 1)
+		if (boss.SpawnFlag >= 1)
 		{
 
 
@@ -1728,7 +1790,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				}
 			}
 		}
+		if (boss.RightLaserFlag==1)
+		{
+		
+			for (int i = 0; i < 100; i++)
+			{
+				if (boss.RightLaser[i].isShoot == 1)
+				{
 
+					Novice::DrawBox(boss.RightLaser[i].position.x, boss.RightLaser[i].position.y, 32, 32, 0.0f,GREEN, kFillModeSolid);
+
+				}
+			}
+		}
 		///
 		/// ↑描画処理ここまで
 		///
