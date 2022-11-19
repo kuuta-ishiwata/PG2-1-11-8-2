@@ -14,8 +14,8 @@
     <Filter Include="KamataEngine\Adapter">
       <UniqueIdentifier>{c6468eb4-788b-4a83-b207-a5f4804e56c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="KamataEngine\自作関数">
-      <UniqueIdentifier>{6e54b473-6f20-4b44-aac8-7dcb65cb3abc}</UniqueIdentifier>
+    <Filter Include="自作関数">
+      <UniqueIdentifier>{101576b6-8e82-44e7-a3f4-c3e36ce90de8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -35,8 +35,15 @@
     <ClCompile Include="C:\KamataEngine\Adapter\Novice.cpp">
       <Filter>KamataEngine\Adapter</Filter>
     </ClCompile>
-    <ClCompile Include="player.cpp" />
-    <ClCompile Include="KuroSprite.cpp" />
+    <ClCompile Include="KuroSprite.cpp">
+      <Filter>自作関数</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>自作関数</Filter>
+    </ClCompile>
+    <ClCompile Include="boss.cpp">
+      <Filter>自作関数</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -117,7 +124,14 @@
     <ClInclude Include="..\DirectXGame\math\Vector4.h">
       <Filter>KamataEngine\Include</Filter>
     </ClInclude>
-    <ClInclude Include="player.h" />
-    <ClInclude Include="KuroSprite.h" />
+    <ClInclude Include="KuroSprite.h">
+      <Filter>自作関数</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>自作関数</Filter>
+    </ClInclude>
+    <ClInclude Include="boss.h">
+      <Filter>自作関数</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

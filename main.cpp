@@ -6,7 +6,7 @@
 
 #include<player.h>
 #include<KuroSprite.h>
-
+#include<boss.h>
 
 const char kWindowTitle[] = "学籍番号";
 struct Vector2
@@ -120,11 +120,23 @@ struct Boss
 	float speed;
 	int radius;
 	Vector2 move;
-	float theta;
+   Vector2 theta;
 
+	int SpawnFlag;
+	int moveFlag;
 
+	int ShootFlag;
+	SHOOT MainShoot[100];
+	SHOOT RightShoot[100];
+	SHOOT LeftShoot[100];
+	float MainTheta;
+	float RightTheta;
+	float LeftTheta;
+	int bullettimer;
 
-
+	Vector2 MainMove[100];
+	Vector2 RightMove[100];
+	Vector2 LeftMove[100];
 
 };
 
@@ -204,6 +216,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 	};
+
+	/*
+	Vector2 position;
+	Vector2 center;
+	float speed;
+	int radius;
+	Vector2 move;
+   Vector2 theta;
+
+	int SpawnFlag;
+	int moveFlag;
+
+	int ShootFlag;
+	SHOOT MainShoot[100];
+	SHOOT RightShoot[100];
+	SHOOT Leftshoot[100];
+
+	*/
 	Boss boss
 	{
 		{336,60},
@@ -211,7 +241,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		5,
 		64,
 		{0,0},
-		0.0f
+		0.0f,
+		0,
+		0,
+		0
+		
 
 
 
@@ -272,8 +306,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	{
 		mine.bullet[i].speed = 2;
 	}
-
-	
+	boss.bullettimer = 0;
+	const int bossbulletNum = 100;
+	//地雷弾初期化
 
 		mine.MineTheta[0] = 0.0f * M_PI;
 		mine.MineTheta[1] = 1.0f /2.0* M_PI;
@@ -298,6 +333,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		mine.MineTheta[14] = 13.0f / 8.0f * M_PI;
 		mine.MineTheta[15] = 15.0f / 8.0f * M_PI;
+
+	//ボス弾初期化
+		boss.MainTheta = 3.0 / 2.0 * M_PI;
+		boss.RightTheta = 3.0f / 8.0f * M_PI;
+		boss.LeftTheta = 5.0f / 8.0f * M_PI;
 
 	// ライブラリの初期化
 
@@ -528,7 +568,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		if (Player.RightMachine.SpawnFlag == 1)
 		{
 
-			Novice::ScreenPrintf(0, 0, "a");
+		
 
 			Player.RightMachine.ShootFlag = 0;
 
@@ -1058,7 +1098,415 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		//ぼす処理開始
 
+		//テストボス沸きkey０
+
+		if (keys[DIK_0])
+		{
+			boss.SpawnFlag = 1;
 		
+		}
+		for (int i = 0; i < 100; i++)
+		{
+			if (boss.MainShoot[i].position.x <= Player.shoot[i].position.x + 32
+				&&
+				Player.shoot[i].position.x <= boss.MainShoot[i].position.x + 64
+				)
+			{
+
+				Novice::ScreenPrintf(500, 500, "kkkkkkkkk");
+				if (boss.MainShoot[i].position.y <= Player.shoot[i].position.y+32 
+					&&
+					Player.shoot[i].position.y <= boss.MainShoot[i].position.y + 32
+					)
+				{
+					Novice::ScreenPrintf(500, 520, "zzzzzzzz");
+
+					boss.MainShoot[i].isShoot = 0;
+					Player.shoot[i].isShoot = 0;
+
+				}
+			}
+		}
+
+
+		for (int i = 0; i < 100; i++)
+		{
+			if (boss.RightShoot[i].position.x <= Player.shoot[i].position.x + 32
+				&&
+				Player.shoot[i].position.x <= boss.RightShoot[i].position.x + 32
+				)
+			{
+
+				Novice::ScreenPrintf(500, 500, "kkkkkkkkk");
+				if (boss.RightShoot[i].position.y <= Player.shoot[i].position.y + 32
+					&&
+					Player.shoot[i].position.y <= boss.RightShoot[i].position.y + 32
+					)
+				{
+					Novice::ScreenPrintf(500, 520, "zzzzzzzz");
+
+					boss.RightShoot[i].isShoot = 0;
+					Player.shoot[i].isShoot = 0;
+
+				}
+			}
+		}
+		for (int i = 0; i < 100; i++)
+		{
+
+
+			if (boss.LeftShoot[i].position.x <= Player.shoot[i].position.x + 32
+				&&
+				Player.shoot[i].position.x <= boss.LeftShoot[i].position.x + 32
+				)
+			{
+				Novice::ScreenPrintf(500, 500, "kkkkkkkkk");
+				if (boss.LeftShoot[i].position.y <= Player.shoot[i].position.y + 32
+					&&
+					Player.shoot[i].position.y <= boss.LeftShoot[i].position.y + 32
+					)
+				{
+					Novice::ScreenPrintf(500, 520, "zzzzzzzz");
+
+					boss.LeftShoot[i].isShoot = 0;
+					Player.shoot[i].isShoot = 0;
+
+				}
+			}
+		}
+
+		for (int i = 0; i < 100; i++)
+		{
+			if (boss.MainShoot[i].position.x <= Player.RightMachine.shoot[i].position.x + 32
+				&&
+				Player.RightMachine.shoot[i].position.x <= boss.MainShoot[i].position.x + 64
+				)
+			{
+
+				Novice::ScreenPrintf(500, 500, "kkkkkkkkk");
+				if (boss.MainShoot[i].position.y <= Player.RightMachine.shoot[i].position.y + 32
+					&&
+					Player.RightMachine.shoot[i].position.y <= boss.MainShoot[i].position.y + 32
+					)
+				{
+					Novice::ScreenPrintf(500, 520, "zzzzzzzz");
+
+					boss.MainShoot[i].isShoot = 0;
+					Player.RightMachine.shoot[i].isShoot = 0;
+
+				}
+			}
+		}
+
+
+		for (int i = 0; i < 100; i++)
+		{
+			if (boss.RightShoot[i].position.x <= Player.RightMachine.shoot[i].position.x + 32
+				&&
+				Player.RightMachine.shoot[i].position.x <= boss.RightShoot[i].position.x + 32
+				)
+			{
+
+				Novice::ScreenPrintf(500, 500, "kkkkkkkkk");
+				if (boss.RightShoot[i].position.y <= Player.RightMachine.shoot[i].position.y + 32
+					&&
+					Player.RightMachine.shoot[i].position.y <= boss.RightShoot[i].position.y + 32
+					)
+				{
+					Novice::ScreenPrintf(500, 520, "zzzzzzzz");
+
+					boss.RightShoot[i].isShoot = 0;
+					Player.RightMachine.shoot[i].isShoot = 0;
+
+				}
+			}
+		}
+		for (int i = 0; i < 100; i++)
+		{
+
+
+			if (boss.LeftShoot[i].position.x <= Player.RightMachine.shoot[i].position.x + 32
+				&&
+				Player.RightMachine.shoot[i].position.x <= boss.LeftShoot[i].position.x + 32
+				)
+			{
+				Novice::ScreenPrintf(500, 500, "kkkkkkkkk");
+				if (boss.LeftShoot[i].position.y <= Player.RightMachine.shoot[i].position.y + 32
+					&&
+					Player.RightMachine.shoot[i].position.y <= boss.LeftShoot[i].position.y + 32
+					)
+				{
+					Novice::ScreenPrintf(500, 520, "zzzzzzzz");
+
+					boss.LeftShoot[i].isShoot = 0;
+					Player.RightMachine.shoot[i].isShoot = 0;
+
+				}
+			}
+		}
+
+		for (int i = 0; i < 100; i++)
+		{
+			if (boss.MainShoot[i].position.x <= Player.LeftMachine.shoot[i].position.x + 32
+				&&
+				Player.LeftMachine.shoot[i].position.x <= boss.MainShoot[i].position.x + 64
+				)
+			{
+
+				Novice::ScreenPrintf(500, 500, "kkkkkkkkk");
+				if (boss.MainShoot[i].position.y <= Player.LeftMachine.shoot[i].position.y + 32
+					&&
+					Player.LeftMachine.shoot[i].position.y <= boss.MainShoot[i].position.y + 32
+					)
+				{
+					Novice::ScreenPrintf(500, 520, "zzzzzzzz");
+
+					boss.MainShoot[i].isShoot = 0;
+					Player.LeftMachine.shoot[i].isShoot = 0;
+
+				}
+			}
+		}
+
+
+		for (int i = 0; i < 100; i++)
+		{
+			if (boss.RightShoot[i].position.x <= Player.LeftMachine.shoot[i].position.x + 32
+				&&
+				Player.LeftMachine.shoot[i].position.x <= boss.RightShoot[i].position.x + 32
+				)
+			{
+
+				Novice::ScreenPrintf(500, 500, "kkkkkkkkk");
+				if (boss.RightShoot[i].position.y <= Player.LeftMachine.shoot[i].position.y + 32
+					&&
+					Player.LeftMachine.shoot[i].position.y <= boss.RightShoot[i].position.y + 32
+					)
+				{
+					Novice::ScreenPrintf(500, 520, "zzzzzzzz");
+
+					boss.RightShoot[i].isShoot = 0;
+					Player.LeftMachine.shoot[i].isShoot = 0;
+
+				}
+			}
+		}
+		for (int i = 0; i < 100; i++)
+		{
+
+
+			if (boss.LeftShoot[i].position.x <= Player.LeftMachine.shoot[i].position.x + 32
+				&&
+				Player.LeftMachine.shoot[i].position.x <= boss.LeftShoot[i].position.x + 32
+				)
+			{
+				Novice::ScreenPrintf(500, 500, "kkkkkkkkk");
+				if (boss.LeftShoot[i].position.y <= Player.LeftMachine.shoot[i].position.y + 32
+					&&
+					Player.LeftMachine.shoot[i].position.y <= boss.LeftShoot[i].position.y + 32
+					)
+				{
+					Novice::ScreenPrintf(500, 520, "zzzzzzzz");
+
+					boss.LeftShoot[i].isShoot = 0;
+					Player.LeftMachine.shoot[i].isShoot = 0;
+
+				}
+			}
+		}
+
+
+		if (boss.SpawnFlag==1)
+		{
+			
+		   //動き処理
+			
+			if (boss.moveFlag==1)
+			{
+				boss.theta.x = 0.0f * M_PI;
+				boss.theta.y = 1.0 / 2.0 * M_PI;
+
+				BossMoveFanction(boss.theta.x, boss.move.x, boss.move.y, boss.speed);
+				
+				if (boss.position.x >= 800)
+				{
+					boss.moveFlag = 0;
+				}
+			
+			
+			
+
+			}
+			if (boss.moveFlag==0)
+			{
+				boss.theta.x = 1.0f * M_PI;
+				
+
+				BossMoveFanction(boss.theta.x, boss.move.x, boss.move.y, boss.speed);
+			
+				if (boss.position.x <= 96)
+				{
+					boss.moveFlag = 1;
+				}
+				
+				
+			}
+			
+
+			boss.position.x += boss.move.x;
+			boss.position.y -= boss.move.y;
+			
+			//動き処理終了
+			boss.ShootFlag = 0;
+			if (boss.ShootFlag == 0)
+			{
+
+
+				boss.bullettimer--;
+				if (boss.bullettimer <= 0)
+				{
+                   
+					boss.bullettimer = 20;
+					boss.ShootFlag = 1;
+				}
+			}
+		
+			
+		
+			//弾処理
+			// 
+			// 
+			// 
+		
+			
+			if (boss.ShootFlag == 1)
+			{
+				for (int i = 0; i < 100; i++)
+				{
+					if (boss.MainShoot[i].isShoot == 0)
+					{
+						boss.MainShoot[i].position.x = boss.position.x + 32;
+						boss.MainShoot[i].position.y = boss.position.y + 48;
+
+						boss.MainShoot[i].speed = 8;
+						WASDPush(boss.MainTheta, boss.MainMove[i].x, boss.MainMove[i].y, boss.MainShoot[i].speed);
+						boss.MainShoot[i].isShoot = 1;
+						break;
+					}
+				}
+
+				for (int i = 0; i < 100; i++)
+				{
+					if (boss.RightShoot[i].isShoot == 0)
+					{
+						boss.RightShoot[i].position.x = boss.position.x + 32;
+						boss.RightShoot[i].position.y = boss.position.y + 48;
+
+						boss.RightShoot[i].speed = 8.5;
+						WASDPush(boss.RightTheta, boss.RightMove[i].x, boss.RightMove[i].y, boss.RightShoot[i].speed);
+
+						boss.RightShoot[i].isShoot = 1;
+						break;
+					}
+				}
+				for (int i = 0; i < 100; i++)
+				{
+					if (boss.LeftShoot[i].isShoot == 0)
+					{
+						boss.LeftShoot[i].position.x = boss.position.x + 32;
+						boss.LeftShoot[i].position.y = boss.position.y + 48;
+
+						boss.LeftShoot[i].speed = 8.5;
+						WASDPush(boss.LeftTheta, boss.LeftMove[i].x, boss.LeftMove[i].y, boss.LeftShoot[i].speed);
+
+						boss.LeftShoot[i].isShoot = 1;
+						break;
+					}
+				}
+
+			}
+
+			
+			//弾後処理
+			for (int i = 0; i < 100; i++)
+			{
+				if (boss.MainShoot[i].isShoot == 0)
+				{
+					boss.MainShoot[i].position = { -200,0 };
+					continue;
+				}
+
+				if (boss.MainShoot[i].isShoot == 1)
+				{
+					boss.MainShoot[i].position.x += boss.MainMove[i].x;
+					boss.MainShoot[i].position.y -= boss.MainMove[i].y;
+				}
+
+				if (boss.MainShoot[i].position.y >= 900)
+				{
+					boss.MainShoot[i].isShoot = 0;
+
+				}
+			}
+
+			for (int i = 0; i < 100; i++)
+			{
+				if (boss.RightShoot[i].isShoot == 0)
+				{
+					boss.RightShoot[i].position = { -200,0 };
+					continue;
+				}
+
+				if (boss.RightShoot[i].isShoot == 1)
+				{
+
+					boss.RightShoot[i].position.x += boss.RightMove[i].x;
+					boss.RightShoot[i].position.y += boss.RightMove[i].y;
+				}
+
+				if (boss.RightShoot[i].position.y >= 900)
+				{
+					boss.RightShoot[i].isShoot = 0;
+
+				}
+			}
+
+			for (int i = 0; i < 100; i++)
+			{
+				if (boss.LeftShoot[i].isShoot == 0)
+				{
+					boss.LeftShoot[i].position = { -200,0 };
+					continue;
+				}
+
+				if (boss.LeftShoot[i].isShoot == 1)
+				{
+
+					boss.LeftShoot[i].position.x += boss.LeftMove[i].x;
+					boss.LeftShoot[i].position.y += boss.LeftMove[i].y;
+				}
+
+				if (boss.LeftShoot[i].position.y >= 900)
+				{
+					boss.LeftShoot[i].isShoot = 0;
+
+				}
+			}
+
+
+
+
+
+
+
+
+
+		}
+		
+
+
+
+
 
 
 
@@ -1079,8 +1527,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		/// ↓描画処理ここから
 		///
 		/// 
-		Novice::DrawSprite(scroll.FrontPosition.x, scroll.FrontPosition.y , tex.starback, 1, 1, 0.0f, WHITE);
-		Novice::DrawSprite(scroll.BackPosition.x, scroll.BackPosition.y, tex.starback, 1, 1, 0.0f, WHITE);
+		//Novice::DrawSprite(scroll.FrontPosition.x, scroll.FrontPosition.y , tex.starback, 1, 1, 0.0f, WHITE);
+		//Novice::DrawSprite(scroll.BackPosition.x, scroll.BackPosition.y, tex.starback, 1, 1, 0.0f, WHITE);
 
 
 		Novice::DrawBox(
@@ -1088,18 +1536,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			Player.position.y,
 			32, 32, 0.0f, WHITE, kFillModeSolid
 		);
+		if (Player.RightMachine.SpawnFlag == 1)
+		{
 
-		Novice::DrawBox(
-			Player.RightMachine.position.x,
-			Player.RightMachine.position.y,
-			24, 24, 0.0f, WHITE, kFillModeSolid
-		);
-		Novice::DrawBox(
-			Player.LeftMachine.position.x,
-			Player.LeftMachine.position.y,
-			24, 24, 0.0f, WHITE, kFillModeSolid
-		);
-		
+
+			Novice::DrawBox(
+				Player.RightMachine.position.x,
+				Player.RightMachine.position.y,
+				24, 24, 0.0f, WHITE, kFillModeSolid
+			);
+		}
+		if (Player.LeftMachine.SpawnFlag == 1)
+		{
+
+
+			Novice::DrawBox(
+				Player.LeftMachine.position.x,
+				Player.LeftMachine.position.y,
+				24, 24, 0.0f, WHITE, kFillModeSolid
+			);
+		}
 		//地雷　
 		if (mine.SpawnFlag == 1)
 		{
@@ -1112,7 +1568,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 
 	
-
+		
 		Novice::DrawLine(Player.barrier1.position.x, Player.barrier1.position.y,
 			Player.barrier3.position.x, Player.barrier3.position.y, WHITE
 		);
@@ -1138,19 +1594,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		for (int i = 0; i < Player.RightMachine.Num; i++)
 		{
-			Novice::DrawSprite
-			(
-				Player.RightMachine.shoot[i].position.x, Player.RightMachine.shoot[i].position.y,
-				tex.RightBullet, 1, 1, 0.0f, WHITE
-			);
+			if (Player.RightMachine.shoot[i].isShoot == 1)
+			{
+
+
+				Novice::DrawSprite
+				(
+					Player.RightMachine.shoot[i].position.x, Player.RightMachine.shoot[i].position.y,
+					tex.RightBullet, 1, 1, 0.0f, WHITE
+				);
+			}
 		}
 		for (int i = 0; i < Player.LeftMachine.Num; i++)
 		{ 
-			Novice::DrawSprite
-			(
-				Player.LeftMachine.shoot[i].position.x, Player.LeftMachine.shoot[i].position.y,
-				tex.LeftBullet, 1, 1, 0.0f, WHITE
-			);
+			if (Player.LeftMachine.shoot[i].isShoot == 1)
+			{
+
+
+				Novice::DrawSprite
+				(
+					Player.LeftMachine.shoot[i].position.x, Player.LeftMachine.shoot[i].position.y,
+					tex.LeftBullet, 1, 1, 0.0f, WHITE
+				);
+			}
 		}
 		if (Player.barrier1.Flag == 1)
 		{
@@ -1208,8 +1674,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		if (isenemyAlive == 1)
 		{
-			Novice::ScreenPrintf(0, 100, "tekiON");
-			Novice::ScreenPrintf(0, 200, "%d", caunt);
+		
 			if (caunt == 0)
 			{
 				Novice::DrawSprite(zako.position.x, zako.position.y, zako1, 1, 1, 0.0f, WHITE);
@@ -1234,9 +1699,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				tex.Explosion, 64, 0.25, 1, 0.0f
 			);
 		}
+		if (boss.SpawnFlag == 1)
+		{
 
-		Novice::DrawBox(boss.position.x, boss.position.y, 96, 96, 0.0f, WHITE, kFillModeSolid);
 
+			Novice::DrawBox(boss.position.x, boss.position.y, 96, 96, 0.0f, WHITE, kFillModeSolid);
+
+
+			for (int i = 0; i < 100; i++)
+			{
+				if (boss.MainShoot[i].isShoot == 1)
+				{
+
+					Novice::DrawBox(boss.MainShoot[i].position.x, boss.MainShoot[i].position.y, 32, 32, 0.0f, RED, kFillModeSolid);
+					
+				}
+				if (boss.RightShoot[i].isShoot == 1)
+				{
+
+					Novice::DrawBox(boss.RightShoot[i].position.x, boss.RightShoot[i].position.y, 32, 32, 0.0f, RED, kFillModeSolid);
+
+				}
+				if (boss.LeftShoot[i].isShoot == 1)
+				{
+
+					Novice::DrawBox(boss.LeftShoot[i].position.x, boss.LeftShoot[i].position.y, 32, 32, 0.0f, RED, kFillModeSolid);
+
+				}
+			}
+		}
 
 		///
 		/// ↑描画処理ここまで
