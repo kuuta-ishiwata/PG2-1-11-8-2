@@ -904,7 +904,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 				}
-			}
+			} 
 			if (mine.Minetimer>=80)
 			{
 				mine.SpawnFlag = 4;
