@@ -176,7 +176,10 @@ struct tex
 	unsigned int Play;
 	unsigned int PlaySelect;
 	unsigned int selectMark;
-
+	unsigned int SelectBack;
+	unsigned int TutorialSelectPlay;
+	unsigned int gameover;
+	unsigned int gameclear;
 
 };
 
@@ -189,20 +192,7 @@ struct Scroll
 
 };
 
-struct Enemy2 {
-	Vector2 pos;
-	Vector2 speed;
-	float radius;
-	int isShot;
-	int isAlive;
-	unsigned int color;
-};
-typedef struct EnemyBullet {
-	Vector2 pos;
-	Vector2 speed;
-	float radius;
-	int isBullet;
-};
+
 
 enum Game
 {
@@ -269,8 +259,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Novice::LoadTexture("./Resouce/tex/mode/tutorialSelect.png"),
 		Novice::LoadTexture("./Resouce/tex/mode/Play.png"),
 		Novice::LoadTexture("./Resouce/tex/mode/PlaySelect.png"),
-		Novice::LoadTexture("./Resouce/tex/mode/SelectMark.png")
-
+		Novice::LoadTexture("./Resouce/tex/mode/SelectMark.png"),
+		Novice::LoadTexture("./Resouce/tex/mode/select.png"),
+		Novice::LoadTexture("./Resouce/tex/mode/TutoRial2.png"),
+        Novice::LoadTexture("./Resouce/tex/mode/gameover.png"),
+        Novice::LoadTexture("./Resouce/tex/mode/gameclear.png")
+		
 
 	};
 
@@ -398,9 +392,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Player.Hp = 5;
 		int  MineBulletPlayerhit = 0;
 		int MineBulletPlayerhitCount=0;
+		int LazerhitCLT = 0;
+		int LazerhitCLTflag = 0;
+
 
 		Player.Flame = 0;
 		Player.FlameCount = 0;
+
 
 
 	// ライブラリの初期化
@@ -508,7 +506,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		//初期化
 			{
-			
+				Player.barrier1.theta = 0.0f;
+				Player.barrier2.theta= 1.5875f;
+				Player.barrier3.theta= 3.175f;
+				Player.barrier4.theta= 4.7625f;
+
+
 				 boss=
 				{
 					{336,60},
@@ -520,10 +523,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					0,
 					0,
 					0
-
-
-
-
 				};
 
 
@@ -532,9 +531,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					{0,0},
 					{0,-1500},
 					5
-
-
-
 				};
 
 				ENEMY mine
@@ -577,6 +573,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				boss.LeftLaserFlag = 0;
 				boss.LazerPosY = 400;
 				boss.LaserCount = 0;
+				
 				for (int i = 0; i < 100; i++)
 				{
 
@@ -623,16 +620,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				Player.Hp = 5;
 				MineBulletPlayerhit = 0;
 				MineBulletPlayerhitCount = 0;
+				mine.SpawnFlag = 1;
+				mine.Minetimer = 0;
+				mine.position = { 0,-50 };
+				zako.position = { 0,-50 };
+			
+
+
+ 				boss.HP = 400;
+				zako.position = { 400,-50 };
+				mine.position = { 300,-50 };
+
+		
+
+
+			
+				Player.Hp = 5;
 				break;
 				//Player.Hp = 5;
 			}
 
-			boss.HP = 400;
-			zako.position = { 400,-50 };
-			mine.position = { 300,-50 };
-			Player.Hp = 5;
+		
 			break;
 		case tutorial:
+
+			if (keys[DIK_SPACE]&&preKeys[DIK_SPACE]==0)
+			{
+				game = home;
+
+			}
+
 				break;
 		case play:
 			Player.PosCenter.x = Player.position.x + Player.radius;
@@ -2166,10 +2183,40 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 				}
+				for (int i = 0; i < 100; i++)
+				{
+					if (boss.RightLaser[i].position.x <= Player.position.x + 32
+						&&
+						Player.position.x <= boss.RightLaser[i].position.x + 32
+						)
+					{
+
+
+						if (boss.RightLaser[i].position.y <= Player.position.y + 32
+							&&
+							Player.position.y <= boss.RightLaser[i].position.y + 32
+							)
+						{
+
+							if (LazerhitCLTflag == 0)
+							{
+
+
+
+								for (int i = 0; i < 1; i++)
+								{
+									Player.Hp--;
+								}
+								LazerhitCLTflag = 1;
+							}
+						}
+					}
+				}
+				
 
 			}
 
-
+		
 
 
 			if (boss.LeftLaserFlag == 1)
@@ -2206,6 +2253,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 				}
+				
+
 				if (boss.LeftLaser[99].isShoot == 1)
 				{
 					if (boss.LeftLaser[99].position.x >= 980)
@@ -2217,9 +2266,41 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 				}
+				for (int i = 0; i < 100; i++)
+				{
+					if (boss.LeftLaser[i].position.x <= Player.position.x + 32
+						&&
+						Player.position.x <= boss.LeftLaser[i].position.x + 32
+						)
+					{
+
+
+						if (boss.LeftLaser[i].position.y <= Player.position.y + 32
+							&&
+							Player.position.y <= boss.LeftLaser[i].position.y + 32
+							)
+						{
+
+
+							if (LazerhitCLTflag == 0)
+							{
+
+
+
+								for (int i = 0; i < 1; i++)
+								{
+									Player.Hp--;
+								}
+								LazerhitCLTflag = 1;
+							}
+
+
+						}
+					}
+				}
 
 			}
-			if (boss.LeftLaserFlag == 2 && boss.LeftLaserFlag == 2)
+			if (boss.LeftLaserFlag == 2 && boss.RightLaserFlag == 2)
 			{
 
 
@@ -2244,6 +2325,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			}
 
+
+
+			if (LazerhitCLTflag == 1)
+			{
+				LazerhitCLT++;
+				if (LazerhitCLT >= 60)
+				{
+					LazerhitCLTflag = 0;
+					LazerhitCLT = 0;
+
+				}
+
+			}
 
 
 			///
@@ -2272,14 +2366,41 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 			break;
 		case clear:
+			Player.barrier1.position = { 0, 0 };
+			Player.barrier2.position = { 0, 0 };
+			Player.barrier3.position = { 0, 0 };
+			Player.barrier4.position = { 0, 0 };
 
+			
+
+			LazerhitCLTflag = 0;
+			LazerhitCLT = 0;
+
+			for (int i = 0; i < 16; i++)
+			{
+				mine.bullet[i].position = { -900,-50 };
+				mine.bullet[i].isShoot = 0;
+			}
 			if (keys[DIK_SPACE]&&preKeys[DIK_SPACE]==0)
 			{
 				game = title;
 			}
 			break;
-		case over:	if (keys[DIK_SPACE] && preKeys[DIK_SPACE] == 0)
+		case over:
+
+			LazerhitCLTflag = 0;
+			LazerhitCLT = 0;
+
+
+				 for (int i = 0; i < 16; i++)
+				 {
+					 mine.bullet[i].position = { -900,-50 };
+					 mine.bullet[i].isShoot = 0;
+				 }
+				 
+		if (keys[DIK_SPACE] && preKeys[DIK_SPACE] == 0)
 		{
+
 			game = title;
 		}
 			break;
@@ -2305,7 +2426,7 @@ case title:
 	break;
 
 case home:
-
+	Novice::DrawSprite(0, 0, tex.SelectBack, 1, 1, 0.0f, WHITE);
 	Novice::DrawSprite(355, 200, tex.tutorial, 1, 1, 0.0f, WHITE);
 	Novice::DrawSprite(355, 450, tex.Play, 1, 1, 0.0f, WHITE);
 	if (GameCount==0)
@@ -2326,6 +2447,9 @@ case home:
 	break;
 
 case tutorial:
+
+	Novice::DrawSprite(0, 0, tex.TutorialSelectPlay, 1, 1, 0.0f, WHITE);
+
 	break;
 
 case play:
@@ -2562,15 +2686,21 @@ case play:
 		}
 	}
 	break;
+	case over:
+		Novice::DrawSprite(0, 0, tex.gameover, 1, 1, 0.0f, WHITE);
+
+		break;
+
+	case clear:
+		Novice::DrawSprite(0, 0, tex.gameclear, 1, 1, 0.0f, WHITE);
+		break;
 
 
 default:
 	break;
 
 }
-
-
-Novice::ScreenPrintf(50, 50, "%d", GameCount);
+Novice::ScreenPrintf(0, 100, "%d", LazerhitCLT);
 
 		///
 		/// ↑描画処理ここまで
