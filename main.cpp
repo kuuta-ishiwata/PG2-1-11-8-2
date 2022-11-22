@@ -113,7 +113,8 @@ struct PLAYER
 	int RItimer;
 	int Hp;
 
-
+	int Flame;
+	int FlameCount;
 };
 
 struct Boss
@@ -169,6 +170,13 @@ struct tex
 	unsigned int starback;
 	unsigned int Mine;
 	unsigned int MineBullet;
+	unsigned int title;
+	unsigned int tutorial;
+	unsigned int tutorialSelect;
+	unsigned int Play;
+	unsigned int PlaySelect;
+	unsigned int selectMark;
+
 
 };
 
@@ -255,9 +263,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Novice::LoadTexture("./Resouce/tex/game/Explosion.png"),
 		Novice::LoadTexture("./Resouce/tex/game/ShootingBack.png"),
 		Novice::LoadTexture("./Resouce/tex/game/enemy/Mine.png"),
-		Novice::LoadTexture("./Resouce/tex/game/enemy/MineBullet.png")
-
-
+		Novice::LoadTexture("./Resouce/tex/game/enemy/MineBullet.png"),
+		Novice::LoadTexture("./Resouce/tex/mode/title.png"),
+		Novice::LoadTexture("./Resouce/tex/mode/Tutorial.png"),
+		Novice::LoadTexture("./Resouce/tex/mode/tutorialSelect.png"),
+		Novice::LoadTexture("./Resouce/tex/mode/Play.png"),
+		Novice::LoadTexture("./Resouce/tex/mode/PlaySelect.png"),
+		Novice::LoadTexture("./Resouce/tex/mode/SelectMark.png")
 
 
 	};
@@ -387,7 +399,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		int  MineBulletPlayerhit = 0;
 		int MineBulletPlayerhitCount=0;
 
-		
+		Player.Flame = 0;
+		Player.FlameCount = 0;
+
+
 	// ライブラリの初期化
 
 		//
@@ -571,7 +586,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					boss.RightShoot[i].speed = 3;
 				}
 				boss.HP = 400;
-
+				
 				//地雷弾初期化
 				mine.SpawnFlag = 1;
 				mine.MineTheta[0] = 0.0f * M_PI;
@@ -625,9 +640,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 
-			Novice::ScreenPrintf(700, 0, "center %f  %f", Player.PosCenter.x, Player.PosCenter.y);
-
-
 			//四隅position
 			HitBoxFanction(
 				Player.radius, Player.PosCenter.x, Player.PosCenter.y,
@@ -637,12 +649,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				Player.hitbox.RiBo.x, Player.hitbox.RiBo.y
 			);
 
-			Novice::ScreenPrintf(300, 0, "%f    %f", Player.hitbox.LeTo.x, Player.hitbox.LeTo.y);
-			Novice::ScreenPrintf(300, 20, "%f    %f", Player.hitbox.RiTo.x, Player.hitbox.RiTo.y);
-			Novice::ScreenPrintf(300, 40, "%f    %f", Player.hitbox.LeBo.x, Player.hitbox.LeBo.y);
-			Novice::ScreenPrintf(300, 60, "%f    %f", Player.hitbox.RiBo.x, Player.hitbox.RiBo.y);
-
-
+		
 
 
 
@@ -1159,13 +1166,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 						)
 					{
 
-						Novice::ScreenPrintf(500, 500, "aaaaa");
+						
 						if (mine.position.y - 32 <= Player.shoot[i].position.y - 16
 							&&
 							Player.shoot[i].position.y <= mine.position.y + 32
 							)
 						{
-							Novice::ScreenPrintf(500, 520, "fbebubfuobew");
+							
 
 							Player.shoot[i].isShoot = 0;
 
@@ -1188,13 +1195,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 						)
 					{
 
-						Novice::ScreenPrintf(500, 500, "aaaaa");
+				
 						if (mine.position.y - 32 <= Player.RightMachine.shoot[i].position.y - 16
 							&&
 							Player.RightMachine.shoot[i].position.y <= mine.position.y + 32
 							)
 						{
-							Novice::ScreenPrintf(500, 520, "fbebubfuobew");
+						
 
 							Player.RightMachine.shoot[i].isShoot = 0;
 
@@ -1219,13 +1226,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 						)
 					{
 
-						Novice::ScreenPrintf(500, 500, "aaaaa");
 						if (mine.position.y - 32 <= Player.LeftMachine.shoot[i].position.y - 16
 							&&
 							Player.LeftMachine.shoot[i].position.y <= mine.position.y + 32
 							)
 						{
-							Novice::ScreenPrintf(500, 520, "fbebubfuobew");
+						
 
 							Player.LeftMachine.shoot[i].isShoot = 0;
 
@@ -2295,9 +2301,28 @@ switch (game)
 case title:
 
 	Novice::ScreenPrintf(0, 0, "fjaihfh" );
+	Novice::DrawSprite(0, 0, tex.title, 1, 1, 0.0f, WHITE);
 	break;
 
 case home:
+
+	Novice::DrawSprite(355, 200, tex.tutorial, 1, 1, 0.0f, WHITE);
+	Novice::DrawSprite(355, 450, tex.Play, 1, 1, 0.0f, WHITE);
+	if (GameCount==0)
+	{
+		Novice::DrawSprite(250, 180, tex.selectMark, 3, 3, 0.0f, WHITE);
+		Novice::DrawSprite(355, 200, tex.tutorialSelect,1,1,0.0f,WHITE);
+
+	}
+
+	if (GameCount == 1)
+	{
+		Novice::DrawSprite(250, 430, tex.selectMark, 3, 3, 0.0f, WHITE);
+		Novice::DrawSprite(355, 450, tex.PlaySelect, 1, 1, 0.0f, WHITE);
+
+	}
+
+
 	break;
 
 case tutorial:
@@ -2314,6 +2339,9 @@ case play:
 		Player.position.y,
 		32, 32, 0.0f, WHITE, kFillModeSolid
 	);
+
+
+
 	if (Player.RightMachine.SpawnFlag == 1)
 	{
 
@@ -2340,7 +2368,28 @@ case play:
 		Novice::DrawSprite(mine.position.x, mine.position.y, tex.Mine, 1, 1, 0.0f, WHITE);
 
 	}
+	if (mine.SpawnFlag == 3)
+	{
 
+
+		for (int i = 0; i < 16; i++)
+		{
+
+			Novice::DrawEllipse(
+				mine.bullet[i].position.x,
+				mine.bullet[i].position.y,
+				16, 16, 0.0f, GREEN, kFillModeSolid
+			);
+			Novice::DrawSprite(
+				mine.bullet[i].position.x - 16,
+				mine.bullet[i].position.y - 16,
+				tex.MineBullet,
+				1, 1, 0.0f, WHITE
+
+
+			);
+		}
+	}
 
 
 
@@ -2420,28 +2469,7 @@ case play:
 			, 16, 16, 0.0f, RED,
 			kFillModeSolid);
 	}
-	if (mine.SpawnFlag == 3)
-	{
-
-
-		for (int i = 0; i < 16; i++)
-		{
-
-			Novice::DrawEllipse(
-				mine.bullet[i].position.x,
-				mine.bullet[i].position.y,
-				16, 16, 0.0f, GREEN, kFillModeSolid
-			);
-			Novice::DrawSprite(
-				mine.bullet[i].position.x - 16,
-				mine.bullet[i].position.y - 16,
-				tex.MineBullet,
-				1, 1, 0.0f, WHITE
-
-
-			);
-		}
-	}
+	
 
 	//雑魚１描画
 
