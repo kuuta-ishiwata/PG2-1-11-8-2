@@ -180,7 +180,7 @@ struct tex
 	unsigned int TutorialSelectPlay;
 	unsigned int gameover;
 	unsigned int gameclear;
-
+	unsigned int lazerBullet;
 };
 
 
@@ -263,7 +263,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Novice::LoadTexture("./Resouce/tex/mode/select.png"),
 		Novice::LoadTexture("./Resouce/tex/mode/TutoRial2.png"),
         Novice::LoadTexture("./Resouce/tex/mode/gameover.png"),
-        Novice::LoadTexture("./Resouce/tex/mode/gameclear.png")
+        Novice::LoadTexture("./Resouce/tex/mode/gameclear.png"),
+		Novice::LoadTexture("./Resouce/tex/game/enemy/Lazer.png")
 		
 
 	};
@@ -964,11 +965,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			//射撃終了
 
 			//テスト
-			if (keys[DIK_1])//子機出現
-			{
-				Player.RightMachine.SpawnFlag = 1;
-				Player.LeftMachine.SpawnFlag = 1;
-			}
+			
 
 
 
@@ -1785,6 +1782,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			if (boss.SpawnCount >= 3500)
 			{
 				boss.SpawnFlag = 1;
+				Player.RightMachine.SpawnFlag = 1;
+				Player.LeftMachine.SpawnFlag = 1;
 			}
 
 			if (boss.SpawnFlag >= 1)
@@ -2375,12 +2374,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			LazerhitCLTflag = 0;
 			LazerhitCLT = 0;
+			for (int i = 0; i < 100; i++)
+			{
+				Player.shoot[i].position = { -200,-50 };
+				Player.LeftMachine.shoot[i].position = { -200,-50 };
+				Player.RightMachine.shoot[i].position = { -200,-50 };
 
+
+			}
 			for (int i = 0; i < 16; i++)
 			{
 				mine.bullet[i].position = { -900,-50 };
 				mine.bullet[i].isShoot = 0;
 			}
+			Player.RightMachine.SpawnFlag = 0;
+			Player.LeftMachine.SpawnFlag = 0;
 			if (keys[DIK_SPACE]&&preKeys[DIK_SPACE]==0)
 			{
 				game = title;
@@ -2392,12 +2400,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			LazerhitCLT = 0;
 
 
+			for (int i = 0; i < 100; i++)
+			{
+				Player.shoot[i].position = { -200,-50 };
+				Player.LeftMachine.shoot[i].position = { -200,-50 };
+				Player.RightMachine.shoot[i].position = { -200,-50 };
+
+
+			}
+
 				 for (int i = 0; i < 16; i++)
 				 {
 					 mine.bullet[i].position = { -900,-50 };
 					 mine.bullet[i].isShoot = 0;
 				 }
-				 
+				 Player.RightMachine.SpawnFlag = 0;
+				 Player.LeftMachine.SpawnFlag = 0;
 		if (keys[DIK_SPACE] && preKeys[DIK_SPACE] == 0)
 		{
 
@@ -2421,7 +2439,7 @@ switch (game)
 {
 case title:
 
-	Novice::ScreenPrintf(0, 0, "fjaihfh" );
+//	Novice::ScreenPrintf(0, 0, "fjaihfh" );
 	Novice::DrawSprite(0, 0, tex.title, 1, 1, 0.0f, WHITE);
 	break;
 
@@ -2456,7 +2474,7 @@ case play:
 
 	Novice::DrawSprite(scroll.FrontPosition.x, scroll.FrontPosition.y, tex.starback, 1, 1, 0.0f, WHITE);
 	Novice::DrawSprite(scroll.BackPosition.x, scroll.BackPosition.y, tex.starback, 1, 1, 0.0f, WHITE);
-	Novice::ScreenPrintf(0, 40, "%d", boss.SpawnCount);
+	//Novice::ScreenPrintf(0, 40, "%d", boss.SpawnCount);
 
 	Novice::DrawBox(
 		Player.position.x,
@@ -2667,8 +2685,9 @@ case play:
 			if (boss.RightLaser[i].isShoot == 1)
 			{
 
-				Novice::DrawBox(boss.RightLaser[i].position.x, boss.RightLaser[i].position.y, 32, 32, 0.0f, GREEN, kFillModeSolid);
-
+				//Novice::DrawBox(boss.RightLaser[i].position.x, boss.RightLaser[i].position.y, 32, 32, 0.0f, GREEN, kFillModeSolid);
+				Novice::DrawSprite(boss.RightLaser[i].position.x, boss.RightLaser[i].position.y, tex.lazerBullet,
+					1, 1, 0.0f, WHITE);
 			}
 		}
 	}
@@ -2680,8 +2699,9 @@ case play:
 			if (boss.LeftLaser[i].isShoot == 1)
 			{
 
-				Novice::DrawBox(boss.LeftLaser[i].position.x, boss.LeftLaser[i].position.y, 32, 32, 0.0f, GREEN, kFillModeSolid);
-
+				//Novice::DrawBox(boss.LeftLaser[i].position.x, boss.LeftLaser[i].position.y, 32, 32, 0.0f, GREEN, kFillModeSolid);
+				Novice::DrawSprite(boss.LeftLaser[i].position.x, boss.LeftLaser[i].position.y, tex.lazerBullet,
+					1, 1, 0.0f, WHITE);
 			}
 		}
 	}
@@ -2700,7 +2720,7 @@ default:
 	break;
 
 }
-Novice::ScreenPrintf(0, 100, "%d", LazerhitCLT);
+
 
 		///
 		/// ↑描画処理ここまで
