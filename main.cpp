@@ -152,6 +152,10 @@ struct Boss
 	int LaserCount;
 	int HP; 
 	int SpawnCount;
+
+	int Flame;
+	int Flamecount;
+
 };
 
 
@@ -159,6 +163,9 @@ struct Sound
 {
 	unsigned int shoot;
 	unsigned int Explosion;
+	unsigned int Select;
+	unsigned int clear;
+	unsigned int over;
 };
 
 struct tex
@@ -181,6 +188,12 @@ struct tex
 	unsigned int gameover;
 	unsigned int gameclear;
 	unsigned int lazerBullet;
+	unsigned int PlayerRiLe;
+	unsigned int Player;
+	unsigned int Boss;
+	unsigned int BossBullet;
+	unsigned int playerHP;
+
 };
 
 
@@ -242,7 +255,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	{
 
 		Novice::LoadAudio("./Resouce/sound/shot.wav"),
-		Novice::LoadAudio("./Resouce/sound/hit.wav")
+		Novice::LoadAudio("./Resouce/sound/hit.wav"),
+		Novice::LoadAudio("./Resouce/sound/Select.wav"),
+		Novice::LoadAudio("./Resouce/sound/clear.wav"),
+		Novice::LoadAudio("./Resouce/sound/over.wav")
 	};
 
 	tex tex
@@ -264,9 +280,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Novice::LoadTexture("./Resouce/tex/mode/TutoRial2.png"),
         Novice::LoadTexture("./Resouce/tex/mode/gameover.png"),
         Novice::LoadTexture("./Resouce/tex/mode/gameclear.png"),
-		Novice::LoadTexture("./Resouce/tex/game/enemy/Lazer.png")
-		
-
+		Novice::LoadTexture("./Resouce/tex/game/enemy/Lazer.png"),
+		Novice::LoadTexture("./Resouce/tex/game/player/koki.png"),
+		Novice::LoadTexture("./Resouce/tex/game/player/Player.png"),
+		Novice::LoadTexture("./Resouce/tex/game/enemy/Boss.png"),
+		Novice::LoadTexture("./Resouce/tex/game/enemy/BossBullet.png"),
+		Novice::LoadTexture("./Resouce/tex/game/player/HP.png")
 	};
 
 	Boss boss
@@ -399,7 +418,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		Player.Flame = 0;
 		Player.FlameCount = 0;
-
+		boss.Flamecount = 0;
+		boss.Flamecount=0; 
 
 
 	// ライブラリの初期化
@@ -457,6 +477,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			if (keys[DIK_SPACE]&&preKeys[DIK_SPACE]==0)
 			{
 				game = home;
+				if (!Novice::IsPlayingAudio(sound.Select))
+				{
+					Novice::PlayAudio(sound.Select, false, 1.0);
+				}
 
 			}
 
@@ -493,10 +517,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			if (keys[DIK_SPACE] && preKeys[DIK_SPACE] == 0)
 			{
 
-
+				if (!Novice::IsPlayingAudio(sound.Select))
+				{
+					Novice::PlayAudio(sound.Select, false, 1.0);
+				}
 				if (GameCount == 0)
 				{
 					game = tutorial;
+				
 				}
 
 				if (GameCount == 1)
@@ -648,7 +676,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			if (keys[DIK_SPACE]&&preKeys[DIK_SPACE]==0)
 			{
 				game = home;
-
+				if (!Novice::IsPlayingAudio(sound.Select))
+				{
+					Novice::PlayAudio(sound.Select, false, 1.0);
+				}
 			}
 
 				break;
@@ -990,7 +1021,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 
 
-			Novice::ScreenPrintf(0, 0, "%d", Player.Hp);
+			//Novice::ScreenPrintf(0, 0, "%d", Player.Hp);
 			if (Player.Hp <= 5)
 			{
 				Player.barrier1.Flag = 1;
@@ -1557,17 +1588,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			//テストボス沸きkey０
 
-			if (keys[DIK_0])
-			{
-				boss.SpawnFlag = 1;
-
-			}
-
-			if (keys[DIK_9])
-			{
-				boss.SpawnFlag = 2;
-
-			}
+		
 
 
 			//boss弾/playermain
@@ -2356,13 +2377,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			if (Player.Hp<=0)
 			{
 				game = over;
-
+				if (!Novice::IsPlayingAudio(sound.over))
+				{
+					Novice::PlayAudio(sound.over, false, 1.0);
+				}
 
 			}
 			if (boss.HP<=0)
 			{
 				game = clear;
+				if (!Novice::IsPlayingAudio(sound.clear))
+				{
+					Novice::PlayAudio(sound.clear, false, 1.0);
+				}
 			}
+
+
+
+
+			//描画処理
+
+			Sprite4Fanction(Player.FlameCount, 60, Player.Flame, 0, 15, 30, 45);
+
+			Sprite4Fanction(boss.Flamecount, 60, boss.Flame, 0, 15, 30, 45);
+
+
+
+
+
+
 			break;
 		case clear:
 			Player.barrier1.position = { 0, 0 };
@@ -2392,6 +2435,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			if (keys[DIK_SPACE]&&preKeys[DIK_SPACE]==0)
 			{
 				game = title;
+				if (!Novice::IsPlayingAudio(sound.Select))
+				{
+					Novice::PlayAudio(sound.Select, false, 1.0);
+				}
 			}
 			break;
 		case over:
@@ -2420,6 +2467,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{
 
 			game = title;
+			if (!Novice::IsPlayingAudio(sound.Select))
+			{
+				Novice::PlayAudio(sound.Select, false, 1.0);
+			}
 		}
 			break;
 		default:
@@ -2476,32 +2527,30 @@ case play:
 	Novice::DrawSprite(scroll.BackPosition.x, scroll.BackPosition.y, tex.starback, 1, 1, 0.0f, WHITE);
 	//Novice::ScreenPrintf(0, 40, "%d", boss.SpawnCount);
 
-	Novice::DrawBox(
-		Player.position.x,
-		Player.position.y,
-		32, 32, 0.0f, WHITE, kFillModeSolid
-	);
 
 
-
+	
 	if (Player.RightMachine.SpawnFlag == 1)
 	{
 
-
-		Novice::DrawBox(
+		Novice::DrawSprite(
 			Player.RightMachine.position.x,
 			Player.RightMachine.position.y,
-			24, 24, 0.0f, WHITE, kFillModeSolid
+			tex.PlayerRiLe, 1, 1, 0.0f, WHITE
+
+
 		);
 	}
 	if (Player.LeftMachine.SpawnFlag == 1)
 	{
 
 
-		Novice::DrawBox(
+		Novice::DrawSprite(
 			Player.LeftMachine.position.x,
 			Player.LeftMachine.position.y,
-			24, 24, 0.0f, WHITE, kFillModeSolid
+			tex.PlayerRiLe, 1, 1, 0.0f, WHITE
+
+
 		);
 	}
 	//地雷　
@@ -2576,40 +2625,52 @@ case play:
 			);
 		}
 	}
+	Tex4Sprite(Player.Flame,
+		Player.position.x,
+		Player.position.y,
+		0, 0,
+		32, 0,
+		64, 0,
+		96, 0,
+		tex.Player,
+		32, 0.25, 1, 0.0f);
+
 	if (Player.barrier1.Flag == 1)
 	{
-		Novice::DrawEllipse(
-			Player.barrier1.position.x, Player.barrier1.position.y
-			, 16, 16, 0.0f, RED,
-			kFillModeSolid);
+		
+
+
+
+		Novice::DrawSprite(
+			Player.barrier1.position.x-8, Player.barrier1.position.y-8,
+			tex.playerHP, 1, 1, 0.0f, WHITE
+		);
 	}
 
-
 	if (Player.barrier2.Flag == 1)
-	{
-		Novice::DrawEllipse(
-			Player.barrier2.position.x, Player.barrier2.position.y
-			, 16, 16, 0.0f, RED,
-			kFillModeSolid);
+	{		
+		Novice::DrawSprite(
+			Player.barrier2.position.x-8, Player.barrier2.position.y-8,
+			tex.playerHP, 1, 1, 0.0f, WHITE
+		);
 	}
 
 	if (Player.barrier4.Flag == 1)
 	{
 
-		Novice::DrawEllipse(
-			Player.barrier4.position.x,
-			Player.barrier4.position.y,
-			16, 16, 0.0f, RED,
-			kFillModeSolid);
+		Novice::DrawSprite(
+			Player.barrier4.position.x-8, Player.barrier4.position.y-8,
+			tex.playerHP, 1, 1, 0.0f, WHITE
+		);
 	}
 
 	if (Player.barrier3.Flag == 1)
 	{
 
-		Novice::DrawEllipse(
-			Player.barrier3.position.x, Player.barrier3.position.y
-			, 16, 16, 0.0f, RED,
-			kFillModeSolid);
+		Novice::DrawSprite(
+			Player.barrier3.position.x-8, Player.barrier3.position.y-8,
+			tex.playerHP, 1, 1, 0.0f, WHITE
+		);
 	}
 	
 
@@ -2635,7 +2696,7 @@ case play:
 		{
 			Novice::DrawSprite(zako.position.x, zako.position.y, zako4, 1, 1, 0.0f, WHITE);
 		}
-		//Novice::DrawBox(enemy.center.X, enemy.center.Y, 10, 10, 0.0f, WHITE, kFillModeSolid);
+		
 	}
 	if (isenemyAlive == 2)
 	{
@@ -2650,32 +2711,52 @@ case play:
 	{
 
 
-		Novice::DrawBox(boss.position.x, boss.position.y, 96, 96, 0.0f, WHITE, kFillModeSolid);
-
-
-
-
 		for (int i = 0; i < 100; i++)
 		{
 			if (boss.MainShoot[i].isShoot == 1)
 			{
 
-				Novice::DrawBox(boss.MainShoot[i].position.x, boss.MainShoot[i].position.y, 32, 32, 0.0f, RED, kFillModeSolid);
+				//Novice::DrawBox(boss.MainShoot[i].position.x, boss.MainShoot[i].position.y, 32, 32, 0.0f, RED, kFillModeSolid);
+				Tex4Sprite(boss.Flame,
+					boss.MainShoot[i].position.x, boss.MainShoot[i].position.y,
+					0, 0,
+					33, 0,
+					65, 0,
+					97, 0,
+					tex.BossBullet,
+					32, 0.25, 1, 0.0f);
 
 			}
 			if (boss.RightShoot[i].isShoot == 1)
 			{
 
-				Novice::DrawBox(boss.RightShoot[i].position.x, boss.RightShoot[i].position.y, 32, 32, 0.0f, RED, kFillModeSolid);
-
+				//Novice::DrawBox(boss.RightShoot[i].position.x, boss.RightShoot[i].position.y, 32, 32, 0.0f, RED, kFillModeSolid);
+				Tex4Sprite(boss.Flame,
+					boss.RightShoot[i].position.x, boss.RightShoot[i].position.y,
+					0, 0,
+					33, 0,
+					65, 0,
+					97, 0,
+					tex.BossBullet,
+					32, 0.25, 1, 0.0f);
 			}
 			if (boss.LeftShoot[i].isShoot == 1)
 			{
 
-				Novice::DrawBox(boss.LeftShoot[i].position.x, boss.LeftShoot[i].position.y, 32, 32, 0.0f, RED, kFillModeSolid);
-
+				//Novice::DrawBox(boss.LeftShoot[i].position.x, boss.LeftShoot[i].position.y, 32, 32, 0.0f, RED, kFillModeSolid);
+				Tex4Sprite(boss.Flame,
+					boss.LeftShoot[i].position.x, boss.LeftShoot[i].position.y,
+					0, 0,
+					33, 0,
+					65, 0,
+					97, 0,
+					tex.BossBullet,
+					32, 0.25, 1, 0.0f);
 			}
 		}
+		Tex4Sprite(boss.Flame, boss.position.x, boss.position.y, 0, 0, 96, 0, 196, 0, 288, 0,
+			tex.Boss, 96, 0.25, 1, 0.0f
+		);
 	}
 	if (boss.RightLaserFlag == 1)
 	{
@@ -2705,6 +2786,9 @@ case play:
 			}
 		}
 	}
+
+		
+		
 	break;
 	case over:
 		Novice::DrawSprite(0, 0, tex.gameover, 1, 1, 0.0f, WHITE);
