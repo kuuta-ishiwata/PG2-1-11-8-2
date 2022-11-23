@@ -208,6 +208,7 @@ struct tex
 	unsigned int BossBullet;
 	unsigned int playerHP;
 	unsigned int BossHP; 
+	unsigned int titlename;
 };
 
 
@@ -303,7 +304,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Novice::LoadTexture("./Resouce/tex/game/enemy/Boss.png"),
 		Novice::LoadTexture("./Resouce/tex/game/enemy/BossBullet.png"),
 		Novice::LoadTexture("./Resouce/tex/game/player/HP.png"),
-		Novice::LoadTexture("./Resouce/tex/game/enemy/HP.png")
+		Novice::LoadTexture("./Resouce/tex/game/enemy/HP.png"),
+		Novice::LoadTexture("./Resouce/tex/mode/titlename.png")
 	};
 
 	Boss boss
@@ -2875,7 +2877,8 @@ switch (game)
 case title:
 
 //	Novice::ScreenPrintf(0, 0, "fjaihfh" );
-	Novice::DrawSprite(0, 0, tex.title, 1, 1, 0.0f, WHITE);
+	Novice::DrawSprite(0, 0, tex.SelectBack, 1, 1, 0.0f, WHITE);
+	Novice::DrawSprite(0, 0, tex.titlename, 1, 1, 0.0f, WHITE);
 	break;
 
 case home:
