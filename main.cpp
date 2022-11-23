@@ -2884,7 +2884,11 @@ case home:
 	Novice::DrawSprite(355, 450, tex.Play, 1, 1, 0.0f, WHITE);
 	if (GameCount==0)
 	{
+	
 		Novice::DrawSprite(250, 180, tex.selectMark, 3, 3, 0.0f, WHITE);
+			
+		
+		
 		Novice::DrawSprite(355, 200, tex.tutorialSelect,1,1,0.0f,WHITE);
 
 	}
@@ -3084,6 +3088,27 @@ case play:
 
 	if (boss.SpawnFlag >= 1)
 	{
+		if (boss.circle.Flag == 1)
+		{
+			for (int i = 0; i < 32; i++)
+			{
+				Novice::DrawSprite(
+					boss.circle.attack[i].position.x - 16,
+					boss.circle.attack[i].position.y - 16,
+					tex.MineBullet,
+					1, 1, 0.0f, WHITE
+
+
+				);
+			}
+
+
+
+		}
+
+		Novice::DrawSprite(boss.position.x - 32, boss.position.y - 38, tex.playerHP, 1, 1, 0.0f, WHITE);
+
+
 		Novice::DrawQuad(
 			boss.position.x+boss.HP , boss.position.y-38,
 			boss.position.x, boss.position.y - 38,
@@ -3139,7 +3164,7 @@ case play:
 					32, 0.25, 1, 0.0f);
 			}
 		}
-		Tex4Sprite(boss.Flame, boss.position.x, boss.position.y, 0, 0, 96, 0, 196, 0, 288, 0,
+		Tex4Sprite(boss.Flame, boss.position.x, boss.position.y, 0, 0, 96, 0, 193, 0, 288, 0,
 			tex.Boss, 96, 0.25, 1, 0.0f
 		);
 	}
