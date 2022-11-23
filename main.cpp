@@ -116,7 +116,20 @@ struct PLAYER
 	int Flame;
 	int FlameCount;
 };
-
+struct Circle
+{
+	SHOOT attack[32];
+	float theta[32];
+	Vector2 move[32];
+	Vector2 move2[32];
+	Vector2 speed;
+	Vector2 center;
+	int Flag;
+	int timer;
+	int ModeChange;
+	float  thetaMove1;
+	float thetaMove2;
+};
 struct Boss
 {
 	Vector2 position;
@@ -155,7 +168,7 @@ struct Boss
 
 	int Flame;
 	int Flamecount;
-
+	Circle circle;
 };
 
 
@@ -166,6 +179,7 @@ struct Sound
 	unsigned int Select;
 	unsigned int clear;
 	unsigned int over;
+	unsigned int playerhit;
 };
 
 struct tex
@@ -195,6 +209,8 @@ struct tex
 	unsigned int playerHP;
 
 };
+
+
 
 
 struct Scroll
@@ -258,7 +274,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Novice::LoadAudio("./Resouce/sound/hit.wav"),
 		Novice::LoadAudio("./Resouce/sound/Select.wav"),
 		Novice::LoadAudio("./Resouce/sound/clear.wav"),
-		Novice::LoadAudio("./Resouce/sound/over.wav")
+		Novice::LoadAudio("./Resouce/sound/over.wav"),
+		Novice::LoadAudio("./Resouce/sound/hit.wav")
 	};
 
 	tex tex
@@ -401,6 +418,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		mine.MineTheta[14] = 13.0f / 8.0f * M_PI;
 		mine.MineTheta[15] = 15.0f / 8.0f * M_PI;
+
+		for (int i = 1; i < 16; i++)
+		{
+
+			boss.circle.theta[i] += 1.0f / 8.0f *M_PI;
+			boss.circle.speed = { 5,5 };
+			boss.circle.attack[i].position = { 240,195 };
+		}
+		for (int i = 17; i < 32; i++)
+		{
+			boss.circle.theta[i] += 1.0f / 8.0f * M_PI;
+			boss.circle.attack[i].position = { 720,585 };
+		}
+	
 
 	//ボス弾初期化
 		boss.MainTheta = 3.0 / 2.0 * M_PI;
@@ -649,7 +680,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				Player.Hp = 5;
 				MineBulletPlayerhit = 0;
 				MineBulletPlayerhitCount = 0;
-				mine.SpawnFlag = 1;
+				mine.SpawnFlag = 4;
 				mine.Minetimer = 0;
 				mine.position = { 0,-50 };
 				zako.position = { 0,-50 };
@@ -661,14 +692,84 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				mine.position = { 300,-50 };
 
 		
+				for (int i = 0; i < 16; i++)
+				{
+					
+					boss.circle.move[i] = {0,0};
+					boss.circle.speed = { 2,2 };
+					boss.circle.attack[i].position = { 240,195 };
+				}
 
-
+			boss.circle.theta[0] = 0.0f * M_PI;
+			boss.circle.theta[1] = 1.0f / 2.0 * M_PI;
 			
+			boss.circle.theta[2] = 3.0f / 2.0f * M_PI;
+			boss.circle.theta[3] = 1.0f * M_PI;
+		
+			boss.circle.theta[4] = 1.0f / 4.0f * M_PI;
+			boss.circle.theta[5] = 3.0f / 4.0f * M_PI;
+		
+			boss.circle.theta[6] = 5.0f / 4.0f * M_PI;
+			boss.circle.theta[7] = 7.0f / 4.0f * M_PI;
+			
+			boss.circle.theta[8] = 1.0f / 8.0 * M_PI;
+			boss.circle.theta[9] = 3.0f / 8.0 * M_PI;
+		
+			boss.circle.theta[10] = 5.0f / 8.0f * M_PI;
+			boss.circle.theta[11] = 7.0f / 8.0 * M_PI;
+			
+			boss.circle.theta[12] = 9.0f / 8.0f * M_PI;
+			boss.circle.theta[13] = 11.0f / 8.0f * M_PI;
+		
+			boss.circle.theta[14] = 13.0f / 8.0f * M_PI;
+			boss.circle.theta[15] = 15.0f / 8.0f * M_PI;
+			
+
+				for (int i = 16; i < 32; i++)
+				{
+				
+					boss.circle.move[i] = { 0,0 };
+					boss.circle.theta[i] += 1.0f / 8.0f * M_PI;
+					boss.circle.attack[i].position = { 670,585 };
+				}
+				boss.circle.theta[16] = 0.0f * M_PI;
+				boss.circle.theta[17] = 1.0f / 2.0 * M_PI;
+
+				boss.circle.theta[18] = 3.0f / 2.0f * M_PI;
+				boss.circle.theta[19] = 1.0f * M_PI;
+
+				boss.circle.theta[20] = 1.0f / 4.0f * M_PI;
+				boss.circle.theta[21] = 3.0f / 4.0f * M_PI;
+
+				boss.circle.theta[22] = 5.0f / 4.0f * M_PI;
+				boss.circle.theta[23] = 7.0f / 4.0f * M_PI;
+
+				boss.circle.theta[24] = 1.0f / 8.0 * M_PI;
+				boss.circle.theta[25] = 3.0f / 8.0 * M_PI;
+
+				boss.circle.theta[26] = 5.0f / 8.0f * M_PI;
+				boss.circle.theta[27] = 7.0f / 8.0 * M_PI;
+
+				boss.circle.theta[28] = 9.0f / 8.0f * M_PI;
+				boss.circle.theta[29] = 11.0f / 8.0f * M_PI;
+
+				boss.circle.theta[30] = 13.0f / 8.0f * M_PI;
+				boss.circle.theta[31] = 15.0f / 8.0f * M_PI;
+				boss.circle.thetaMove1 = 1.0f/2.0f*M_PI;
+				boss.circle.thetaMove2 = 3.0f/2.0*M_PI;
+
+				for (int i = 0; i < 32; i++)
+				{
+
+
+					boss.circle.move2[i] = { 0,0 };
+				}
 				Player.Hp = 5;
+				boss.circle.ModeChange = 0;
 				break;
 				//Player.Hp = 5;
 			}
-
+		
 		
 			break;
 		case tutorial:
@@ -1648,7 +1749,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					Player.shoot[i].position.x <= boss.LeftShoot[i].position.x + 64
 					)
 				{
-					\
+					
 						if (boss.LeftShoot[i].position.y <= Player.shoot[i].position.y + 32
 							&&
 							Player.shoot[i].position.y <= boss.LeftShoot[i].position.y + 32
@@ -1800,7 +1901,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 			boss.SpawnCount++;
 
-			if (boss.SpawnCount >= 3500)
+			if (boss.SpawnCount >= 2500)
 			{
 				boss.SpawnFlag = 1;
 				Player.RightMachine.SpawnFlag = 1;
@@ -1883,6 +1984,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 							for (int i = 0; i < 1; i++)
 							{
 								Player.Hp--;
+								if (!Novice::IsPlayingAudio(sound.playerhit))
+								{
+									Novice::PlayAudio(sound.playerhit, false, 1.0);
+								}
 							}
 
 						}
@@ -1910,6 +2015,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 							for (int i = 0; i < 1; i++)
 							{
 								Player.Hp--;
+								if (!Novice::IsPlayingAudio(sound.playerhit))
+								{
+									Novice::PlayAudio(sound.playerhit, false, 1.0);
+								}
 							}
 
 
@@ -1937,6 +2046,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 							for (int i = 0; i < 1; i++)
 							{
 								Player.Hp--;
+								if (!Novice::IsPlayingAudio(sound.playerhit))
+								{
+									Novice::PlayAudio(sound.playerhit, false, 1.0);
+								}
 							}
 
 
@@ -1964,6 +2077,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 							for (int j = 0; j < 1; j++)
 							{
 								boss.HP--;
+
 							}
 							Player.shoot[i].isShoot = 0;
 
@@ -1990,6 +2104,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 							for (int j = 0; j < 1; j++)
 							{
 								boss.HP--;
+							
+								
 							}
 							Player.RightMachine.shoot[i].isShoot = 0;
 
@@ -2014,6 +2130,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 							for (int j = 0; j < 1; j++)
 							{
 								boss.HP--;
+							
 							}
 							Player.LeftMachine.shoot[i].isShoot = 0;
 
@@ -2149,7 +2266,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			}
 			//レーザー処理
-
+			if (boss.HP <= 300)
+			{
+				//mine.SpawnFlag = 10;
+				boss.circle.Flag = 1;
+			}
 			if (boss.HP <= 200)
 			{
 				boss.RightLaserFlag = 1;
@@ -2226,6 +2347,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 								for (int i = 0; i < 1; i++)
 								{
 									Player.Hp--;
+									if (!Novice::IsPlayingAudio(sound.playerhit))
+									{
+										Novice::PlayAudio(sound.playerhit, false, 1.0);
+									}
 								}
 								LazerhitCLTflag = 1;
 							}
@@ -2310,6 +2435,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 								for (int i = 0; i < 1; i++)
 								{
 									Player.Hp--;
+									if (!Novice::IsPlayingAudio(sound.playerhit))
+									{
+										Novice::PlayAudio(sound.playerhit, false, 1.0);
+									}
 								}
 								LazerhitCLTflag = 1;
 							}
@@ -2358,8 +2487,262 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				}
 
 			}
+			if (boss.circle.Flag==1)
+			{
+				for (int i = 0; i < 32; i++)
+				{
+					if (boss.circle.attack[i].position.x <= Player.position.x + 32
+						&&
+						Player.position.x <= boss.circle.attack[i].position.x + 32
+						)
+					{
 
 
+						if (boss.circle.attack[i].position.y <= Player.position.y + 32
+							&&
+							Player.position.y <= boss.circle.attack[i].position.y + 32
+							)
+						{
+
+
+
+							if (LazerhitCLTflag == 0)
+							{
+
+
+
+								for (int i = 0; i < 1; i++)
+								{
+									Player.Hp--;
+									if (!Novice::IsPlayingAudio(sound.playerhit))
+									{
+										Novice::PlayAudio(sound.playerhit, false, 1.0);
+									}
+								}
+								LazerhitCLTflag = 1;
+
+							}
+						}
+					}
+				}
+				boss.circle.timer++;
+				if (boss.circle.timer>=0&& boss.circle.timer <= 60)
+				{
+					boss.circle.ModeChange = 0;
+				}
+				if (boss.circle.timer >= 61 && boss.circle.timer <= 120)
+				{
+					boss.circle.ModeChange = 1;
+				}
+				if (boss.circle.timer >= 121 && boss.circle.timer <= 240)
+				{
+					boss.circle.ModeChange = 2;
+					for (int i = 16; i < 32; i++)
+					{
+						WASDPush(boss.circle.thetaMove2, boss.circle.move2[i].x, boss.circle.move2[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.y += boss.circle.move2[i].y;
+
+					}
+					for (int i = 0; i < 16; i++)
+					{
+						WASDPush(boss.circle.thetaMove1, boss.circle.move2[i].x, boss.circle.move2[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.y += boss.circle.move2[i].y;
+
+					}
+				}
+				if (boss.circle.timer >= 241 && boss.circle.timer <= 360)
+				{
+					boss.circle.ModeChange = 3;
+					for (int i = 16; i < 32; i++)
+					{
+						WASDPush(boss.circle.thetaMove1, boss.circle.move2[i].x, boss.circle.move2[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.y += boss.circle.move2[i].y;
+
+					}
+					for (int i = 0; i < 16; i++)
+					{
+						WASDPush(boss.circle.thetaMove2, boss.circle.move2[i].x, boss.circle.move2[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.y += boss.circle.move2[i].y;
+
+					}
+				}
+				if (boss.circle.timer>=360)
+				{
+					boss.circle.timer = 121;
+				}
+
+				if (boss.circle.ModeChange == 0)
+				{
+
+
+					for (int i = 0; i < 8; i++)
+					{
+						WASDPush(boss.circle.theta[i], boss.circle.move[i].x, boss.circle.move[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.x += boss.circle.move[i].x;
+						boss.circle.attack[i].position.y += boss.circle.move[i].y;
+
+					}
+				
+					for (int i = 16; i < 24; i++)
+					{
+						WASDPush(boss.circle.theta[i], boss.circle.move[i].x, boss.circle.move[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.x += boss.circle.move[i].x;
+						boss.circle.attack[i].position.y += boss.circle.move[i].y;
+
+					}
+
+					for (int i = 8; i < 16; i++)
+					{
+
+						WASDPush(boss.circle.theta[i], boss.circle.move[i].x, boss.circle.move[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.x += boss.circle.move[i].x;
+						boss.circle.attack[i].position.y += boss.circle.move[i].y;
+
+
+
+					}
+
+					for (int i = 24; i < 32; i++)
+					{
+
+						WASDPush(boss.circle.theta[i], boss.circle.move[i].x, boss.circle.move[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.x += boss.circle.move[i].x;
+						boss.circle.attack[i].position.y += boss.circle.move[i].y;
+
+
+
+					}
+				}
+				if (boss.circle.ModeChange == 2)
+				{
+
+					for (int i = 0; i < 8; i++)
+					{
+						WASDPush(boss.circle.theta[i], boss.circle.move[i].x, boss.circle.move[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.x += boss.circle.move[i].x;
+						boss.circle.attack[i].position.y += boss.circle.move[i].y;
+
+					}
+
+					for (int i = 16; i < 24; i++)
+					{
+						WASDPush(boss.circle.theta[i], boss.circle.move[i].x, boss.circle.move[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.x += boss.circle.move[i].x;
+						boss.circle.attack[i].position.y += boss.circle.move[i].y;
+
+					}
+					for (int i = 8; i < 16; i++)
+					{
+
+						WASDPush(boss.circle.theta[i], boss.circle.move[i].x, boss.circle.move[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.x -= boss.circle.move[i].x;
+						boss.circle.attack[i].position.y -= boss.circle.move[i].y;
+
+
+
+					}
+
+					for (int i = 24; i < 32; i++)
+					{
+
+						WASDPush(boss.circle.theta[i], boss.circle.move[i].x, boss.circle.move[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.x -= boss.circle.move[i].x;
+						boss.circle.attack[i].position.y -= boss.circle.move[i].y;
+
+
+
+					}
+				}
+				if (boss.circle.ModeChange==3)
+				{
+					for (int i = 0; i < 8; i++)
+					{
+						WASDPush(boss.circle.theta[i], boss.circle.move[i].x, boss.circle.move[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.x -= boss.circle.move[i].x;
+						boss.circle.attack[i].position.y -= boss.circle.move[i].y;
+
+					}
+
+					for (int i = 16; i < 24; i++)
+					{
+						WASDPush(boss.circle.theta[i], boss.circle.move[i].x, boss.circle.move[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.x -= boss.circle.move[i].x;
+						boss.circle.attack[i].position.y -= boss.circle.move[i].y;
+
+					}
+					
+					for (int i = 8; i < 16; i++)
+					{
+			
+						WASDPush(boss.circle.theta[i], boss.circle.move[i].x, boss.circle.move[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.x += boss.circle.move[i].x;
+						boss.circle.attack[i].position.y += boss.circle.move[i].y;
+
+
+
+					}
+				
+					for (int i = 24; i < 32; i++)
+					{
+
+						WASDPush(boss.circle.theta[i], boss.circle.move[i].x, boss.circle.move[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.x += boss.circle.move[i].x;
+						boss.circle.attack[i].position.y += boss.circle.move[i].y;
+
+
+
+					}
+				
+				}
+			
+				if (boss.circle.ModeChange==1)
+				{
+					for (int i = 0; i < 24; i++)
+					{
+						WASDPush(boss.circle.theta[i], boss.circle.move[i].x, boss.circle.move[i].y, boss.circle.speed.x);
+
+					}
+
+
+
+
+					for (int i = 0; i < 8; i++)
+					{
+						WASDPush(boss.circle.theta[i], boss.circle.move[i].x, boss.circle.move[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.x -= boss.circle.move[i].x;
+						boss.circle.attack[i].position.y -= boss.circle.move[i].y;
+
+					}
+
+					for (int i = 16; i < 24; i++)
+					{
+						WASDPush(boss.circle.theta[i], boss.circle.move[i].x, boss.circle.move[i].y, boss.circle.speed.x);
+
+						boss.circle.attack[i].position.x -= boss.circle.move[i].x;
+						boss.circle.attack[i].position.y -= boss.circle.move[i].y;
+
+					}
+				}
+
+			}
+			
 			///
 			/// ↑更新処理ここまで
 			///
@@ -2625,16 +3008,7 @@ case play:
 			);
 		}
 	}
-	Tex4Sprite(Player.Flame,
-		Player.position.x,
-		Player.position.y,
-		0, 0,
-		32, 0,
-		64, 0,
-		96, 0,
-		tex.Player,
-		32, 0.25, 1, 0.0f);
-
+	
 	if (Player.barrier1.Flag == 1)
 	{
 		
@@ -2786,9 +3160,37 @@ case play:
 			}
 		}
 	}
+	if (boss.circle.Flag==1)
+	{
+		for ( int i = 0; i <32; i++)
+		{
+			Novice::DrawSprite(
+				boss.circle.attack[i].position.x - 16,
+				boss.circle.attack[i].position.y - 16,
+				tex.MineBullet,
+				1, 1, 0.0f, WHITE
 
-		
-		
+
+			);
+		}
+
+
+
+	}
+
+	
+
+	Tex4Sprite(Player.Flame,
+		Player.position.x,
+		Player.position.y,
+		0, 0,
+		32, 0,
+		64, 0,
+		96, 0,
+		tex.Player,
+		32, 0.25, 1, 0.0f);
+
+	
 	break;
 	case over:
 		Novice::DrawSprite(0, 0, tex.gameover, 1, 1, 0.0f, WHITE);
