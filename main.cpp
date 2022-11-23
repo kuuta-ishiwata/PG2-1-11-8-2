@@ -207,7 +207,7 @@ struct tex
 	unsigned int Boss;
 	unsigned int BossBullet;
 	unsigned int playerHP;
-
+	unsigned int BossHP; 
 };
 
 
@@ -302,7 +302,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Novice::LoadTexture("./Resouce/tex/game/player/Player.png"),
 		Novice::LoadTexture("./Resouce/tex/game/enemy/Boss.png"),
 		Novice::LoadTexture("./Resouce/tex/game/enemy/BossBullet.png"),
-		Novice::LoadTexture("./Resouce/tex/game/player/HP.png")
+		Novice::LoadTexture("./Resouce/tex/game/player/HP.png"),
+		Novice::LoadTexture("./Resouce/tex/game/enemy/HP.png")
 	};
 
 	Boss boss
@@ -1910,7 +1911,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			if (boss.SpawnFlag >= 1)
 			{
-				Novice::ScreenPrintf(30, 0, "%d", boss.HP);
+				
 				//動き処理
 
 				if (boss.moveFlag == 1)
@@ -3083,7 +3084,17 @@ case play:
 
 	if (boss.SpawnFlag >= 1)
 	{
-
+		Novice::DrawQuad(
+			boss.position.x+boss.HP , boss.position.y-38,
+			boss.position.x, boss.position.y - 38,
+			boss.position.x+boss.HP, boss.position.y - 24,
+			boss.position.x, boss.position.y - 24,
+			
+			0, 0,
+			32, 16,
+			tex.BossHP,
+			WHITE
+		);
 
 		for (int i = 0; i < 100; i++)
 		{
@@ -3178,7 +3189,7 @@ case play:
 
 	}
 
-	
+
 
 	Tex4Sprite(Player.Flame,
 		Player.position.x,
