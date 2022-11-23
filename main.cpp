@@ -809,7 +809,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			//移動処理
 			Player.move = { 0,0 };
-
+		
 
 
 			//上
@@ -870,6 +870,33 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			//移動処理終了
 
+			if (Player.position.y<=0)
+			{
+
+				Player.position.y = 0;
+
+			}
+
+			if (Player.position.x <= 0)
+			{
+
+				Player.position.x = 0;
+
+			}
+
+			if (Player.position.y+32 >= 780)
+			{
+
+				Player.position.y = 780-32;
+
+			}
+
+			if (Player.position.x+32 >= 960)
+			{
+
+				Player.position.x = 960-32;
+
+			}
 
 			//射撃
 			for (int i = 0; i < Player.Num; i++)
